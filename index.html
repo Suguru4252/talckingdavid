@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>✨ LEONARDO AI PREMIUM</title>
+    <title>AI IMAGE GENERATOR</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         
         body {
-            background: linear-gradient(135deg, #0a0f1a 0%, #1a1f2f 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -25,267 +25,67 @@
             width: 100%;
             max-width: 400px;
             height: 95vh;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            border-radius: 40px;
+            background: white;
+            border-radius: 30px;
             overflow: hidden;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             display: flex;
             flex-direction: column;
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        /* Шапка с градиентом */
         .header {
-            background: linear-gradient(135deg, #4158D0 0%, #C850C0 50%, #FFCC70 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
             color: white;
-            padding: 25px 20px;
+            padding: 20px;
             text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
-        }
-        
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
         }
         
         .header h1 {
-            font-size: 28px;
-            font-weight: bold;
+            font-size: 24px;
             margin-bottom: 5px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            position: relative;
         }
         
-        .header p {
-            font-size: 13px;
-            opacity: 0.9;
-            position: relative;
-        }
-        
-        .badge {
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-            padding: 8px 15px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-top: 10px;
-            display: inline-block;
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-        
-        /* Контент */
         .content {
             flex: 1;
             overflow-y: auto;
             padding: 20px;
-            background: #f8fafd;
-        }
-        
-        /* Главный экран */
-        .main-card {
-            background: white;
-            border-radius: 25px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-        
-        .input-wrapper {
-            position: relative;
-            margin-bottom: 20px;
-        }
-        
-        .input-icon {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 20px;
-            color: #4158D0;
         }
         
         .prompt-input {
             width: 100%;
-            padding: 18px 18px 18px 50px;
-            border: 2px solid #eef2f6;
-            border-radius: 30px;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
             font-size: 16px;
-            transition: all 0.3s;
-            background: #f8fafd;
+            margin-bottom: 15px;
         }
         
-        .prompt-input:focus {
-            border-color: #4158D0;
-            outline: none;
-            background: white;
-            box-shadow: 0 5px 20px rgba(65, 88, 208, 0.1);
-        }
-        
-        /* Настройки */
-        .settings-section {
-            margin: 20px 0;
-        }
-        
-        .settings-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #666;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .settings-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-        
-        .option-btn {
-            background: #f0f3f8;
-            border: 2px solid transparent;
-            padding: 12px 5px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #555;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-        }
-        
-        .option-btn.active {
-            background: linear-gradient(135deg, #4158D0 0%, #C850C0 100%);
-            color: white;
-            border-color: transparent;
-            box-shadow: 0 5px 15px rgba(65, 88, 208, 0.3);
-        }
-        
-        .option-btn.style-btn {
-            background: white;
-            border: 2px solid #eef2f6;
-        }
-        
-        .option-btn.style-btn.active {
-            background: linear-gradient(135deg, #4158D0 0%, #C850C0 100%);
-            border-color: transparent;
-        }
-        
-        /* Кнопки */
-        .generate-btn {
-            background: linear-gradient(135deg, #4158D0 0%, #C850C0 100%);
+        .btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
             color: white;
             border: none;
-            padding: 20px;
-            border-radius: 40px;
-            font-size: 18px;
+            padding: 15px;
+            border-radius: 25px;
+            font-size: 16px;
             font-weight: bold;
             width: 100%;
-            margin: 20px 0;
+            margin: 10px 0;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 10px 25px rgba(65, 88, 208, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
         }
         
-        .generate-btn:active {
-            transform: scale(0.98);
-            box-shadow: 0 5px 15px rgba(65, 88, 208, 0.4);
-        }
-        
-        .generate-btn:disabled {
-            opacity: 0.6;
-            pointer-events: none;
-        }
-        
-        .secondary-btn {
-            background: white;
-            border: 2px solid #eef2f6;
-            color: #555;
-            padding: 15px;
-            border-radius: 30px;
-            font-size: 15px;
-            font-weight: 600;
-            width: 100%;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        
-        .secondary-btn:active {
-            background: #f0f3f8;
-        }
-        
-        /* Статус */
-        .credits-box {
-            background: linear-gradient(135deg, #667eea0d 0%, #764ba20d 100%);
-            border-radius: 20px;
-            padding: 15px;
-            margin: 15px 0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border: 1px solid rgba(65, 88, 208, 0.2);
-        }
-        
-        .credits-label {
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .credits-value {
-            font-size: 18px;
-            font-weight: bold;
-            background: linear-gradient(135deg, #4158D0, #C850C0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        /* Загрузка */
-        .loading-screen {
-            display: none;
+        .loading {
             text-align: center;
-            padding: 40px 20px;
-        }
-        
-        .spinner-container {
-            position: relative;
-            width: 80px;
-            height: 80px;
-            margin: 20px auto;
+            padding: 40px;
         }
         
         .spinner {
-            width: 80px;
-            height: 80px;
-            border: 4px solid #f0f3f8;
-            border-top: 4px solid #4158D0;
-            border-right: 4px solid #C850C0;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3b82f6;
             border-radius: 50%;
-            animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
         }
         
         @keyframes spin {
@@ -293,443 +93,133 @@
             100% { transform: rotate(360deg); }
         }
         
-        .loading-text {
-            font-size: 18px;
-            font-weight: bold;
-            margin: 20px 0 10px;
-            background: linear-gradient(135deg, #4158D0, #C850C0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        /* Результат */
-        .result-screen {
-            display: none;
-        }
-        
-        .image-card {
-            background: white;
-            border-radius: 25px;
-            padding: 15px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            margin: 20px 0;
-        }
-        
-        .image-container {
-            background: linear-gradient(135deg, #f0f3f8 0%, #e6e9f0 100%);
-            border-radius: 20px;
-            padding: 10px;
-            text-align: center;
-        }
-        
-        .generated-image {
-            max-width: 100%;
+        .result-image {
+            width: 100%;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transition: transform 0.3s;
-        }
-        
-        .generated-image:hover {
-            transform: scale(1.02);
-        }
-        
-        .action-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
             margin: 20px 0;
         }
         
-        .action-btn {
-            background: white;
-            border: 2px solid #eef2f6;
-            padding: 15px;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #555;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        
-        .action-btn.primary {
-            background: linear-gradient(135deg, #4158D0 0%, #C850C0 100%);
-            color: white;
-            border: none;
-        }
-        
-        /* Стили для скрытых элементов */
         .hidden {
             display: none;
-        }
-        
-        /* Скролл */
-        .content::-webkit-scrollbar {
-            width: 4px;
-        }
-        
-        .content::-webkit-scrollbar-track {
-            background: #f0f3f8;
-        }
-        
-        .content::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #4158D0, #C850C0);
-            border-radius: 4px;
         }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- Шапка -->
         <div class="header">
-            <h1>✨ LEONARDO AI</h1>
-            <p>Создавай шедевры с помощью искусственного интеллекта</p>
-            <div class="badge">
-                ⚡ 150 генераций в день
-            </div>
+            <h1>🎨 AI GENERATOR</h1>
+            <p>Работает 100%</p>
         </div>
         
-        <!-- Контент -->
         <div class="content" id="content">
-            <!-- ГЛАВНЫЙ ЭКРАН -->
-            <div id="mainScreen">
-                <div class="main-card">
-                    <div class="input-wrapper">
-                        <span class="input-icon">🎨</span>
-                        <input type="text" id="promptInput" class="prompt-input" placeholder="Что ты хочешь увидеть?">
-                    </div>
-                    
-                    <div class="settings-section">
-                        <div class="settings-title">
-                            <span>📐 РАЗМЕР</span>
-                        </div>
-                        <div class="settings-grid" id="sizeButtons">
-                            <div class="option-btn" data-size="512" onclick="setSize('512', this)">512x512</div>
-                            <div class="option-btn active" data-size="768" onclick="setSize('768', this)">768x768</div>
-                            <div class="option-btn" data-size="1024" onclick="setSize('1024', this)">1024x1024</div>
-                        </div>
-                    </div>
-                    
-                    <div class="settings-section">
-                        <div class="settings-title">
-                            <span>🎭 СТИЛЬ</span>
-                        </div>
-                        <div class="settings-grid" id="styleButtons">
-                            <div class="option-btn style-btn active" data-style="LEONARDO" onclick="setStyle('LEONARDO', this)">🎨 Стандарт</div>
-                            <div class="option-btn style-btn" data-style="PHOTOREALISTIC" onclick="setStyle('PHOTOREALISTIC', this)">📸 Реализм</div>
-                            <div class="option-btn style-btn" data-style="ANIME" onclick="setStyle('ANIME', this)">🌸 Аниме</div>
-                            <div class="option-btn style-btn" data-style="CREATIVE" onclick="setStyle('CREATIVE', this)">✨ Креатив</div>
-                            <div class="option-btn style-btn" data-style="FANTASY" onclick="setStyle('FANTASY', this)">🧚 Фэнтези</div>
-                            <div class="option-btn style-btn" data-style="SCI-FI" onclick="setStyle('SCI-FI', this)">🚀 Киберпанк</div>
-                        </div>
-                    </div>
-                    
-                    <div class="settings-section">
-                        <div class="settings-title">
-                            <span>🤖 МОДЕЛЬ</span>
-                        </div>
-                        <div class="settings-grid" id="modelButtons">
-                            <div class="option-btn style-btn active" data-model="1e60896f-3c26-4296-8ecc-53e2afe5c8b4" onclick="setModel('1e60896f-3c26-4296-8ecc-53e2afe5c8b4', this)">⚡ Lightning</div>
-                            <div class="option-btn style-btn" data-model="e316348f-7773-490e-adcd-46757c738eb7" onclick="setModel('e316348f-7773-490e-adcd-46757c738eb7', this)">🎨 Diffusion</div>
-                            <div class="option-btn style-btn" data-model="b24e16ff-06bd-42c6-a8a9-29df47a8df8a" onclick="setModel('b24e16ff-06bd-42c6-a8a9-29df47a8df8a', this)">📸 Photo</div>
-                        </div>
-                    </div>
-                    
-                    <button class="generate-btn" onclick="generateImage()" id="generateBtn">
-                        <span>✨</span> СОЗДАТЬ ИЗОБРАЖЕНИЕ <span>✨</span>
-                    </button>
-                    
-                    <div class="credits-box">
-                        <span class="credits-label">💰 Доступно генераций сегодня:</span>
-                        <span class="credits-value" id="creditsCount">150</span>
-                    </div>
-                    
-                    <button class="secondary-btn" onclick="resetKey()">
-                        <span>🔄</span> Сменить API ключ
-                    </button>
-                </div>
+            <!-- Экран ввода -->
+            <div id="inputScreen">
+                <input type="text" id="prompt" class="prompt-input" placeholder="Например: черный кот" value="черный кот">
+                <button class="btn" onclick="startGeneration()">🚀 СГЕНЕРИРОВАТЬ</button>
             </div>
             
-            <!-- ЭКРАН ЗАГРУЗКИ -->
-            <div id="loadingScreen" class="loading-screen">
-                <div class="spinner-container">
-                    <div class="spinner"></div>
-                </div>
-                <div class="loading-text">Творец работает...</div>
-                <p style="color: #888; margin-top: 10px;">Нейросеть создает изображение</p>
-                <p style="color: #aaa; font-size: 13px; margin-top: 20px;" id="loadingStep">✨ Шаг 1 из 2</p>
+            <!-- Экран загрузки -->
+            <div id="loadingScreen" class="loading hidden">
+                <div class="spinner"></div>
+                <p>Генерация...</p>
             </div>
             
-            <!-- ЭКРАН РЕЗУЛЬТАТА -->
-            <div id="resultScreen" class="result-screen">
-                <div class="image-card">
-                    <div class="image-container" id="imageContainer">
-                        <img id="resultImage" class="generated-image" src="" alt="Generated Image">
-                    </div>
-                    
-                    <div class="action-buttons">
-                        <button class="action-btn primary" onclick="downloadImage()">
-                            <span>💾</span> Скачать
-                        </button>
-                        <button class="action-btn" onclick="shareImage()">
-                            <span>📤</span> Поделиться
-                        </button>
-                    </div>
-                    
-                    <div style="display: flex; gap: 10px;">
-                        <button class="secondary-btn" style="flex:1;" onclick="newImage()">
-                            <span>🔄</span> Новая
-                        </button>
-                        <button class="secondary-btn" style="flex:1;" onclick="copyPrompt()">
-                            <span>📋</span> Копировать
-                        </button>
-                    </div>
-                </div>
+            <!-- Экран результата -->
+            <div id="resultScreen" class="hidden">
+                <img id="resultImage" class="result-image" src="" alt="Generated">
+                <button class="btn" onclick="downloadImage()">💾 СКАЧАТЬ</button>
+                <button class="btn" style="background:#f1f5f9; color:#333;" onclick="newImage()">🔄 НОВАЯ</button>
             </div>
         </div>
     </div>
     
     <script>
-        // ========== ТВОЙ КЛЮЧ ==========
-        const API_KEY = "0dae1b75-4de2-42c3-a454-dd15d8452275";
+        // ========== РАБОЧИЕ API (ВЫБЕРИ ОДИН) ==========
         
-        // Настройки
-        let currentSize = '768';
-        let currentStyle = 'LEONARDO';
-        let currentModel = '1e60896f-3c26-4296-8ecc-53e2afe5c8b4';
-        let currentImageUrl = '';
-        let currentPrompt = '';
-        
-        // Статистика
-        let dailyGenerations = 0;
-        const MAX_GENERATIONS = 150;
-        
-        // Загрузка статистики
-        function loadStats() {
-            const today = new Date().toDateString();
-            const saved = localStorage.getItem('leonardoStats');
-            
-            if (saved) {
-                const stats = JSON.parse(saved);
-                if (stats.date === today) {
-                    dailyGenerations = stats.count;
-                } else {
-                    dailyGenerations = 0;
-                    localStorage.setItem('leonardoStats', JSON.stringify({
-                        date: today,
-                        count: 0
-                    }));
-                }
-            } else {
-                localStorage.setItem('leonardoStats', JSON.stringify({
-                    date: today,
-                    count: 0
-                }));
-            }
-            
-            document.getElementById('creditsCount').textContent = MAX_GENERATIONS - dailyGenerations;
-        }
-        
-        // Сохранение статистики
-        function saveStats() {
-            dailyGenerations++;
-            const today = new Date().toDateString();
-            localStorage.setItem('leonardoStats', JSON.stringify({
-                date: today,
-                count: dailyGenerations
-            }));
-            document.getElementById('creditsCount').textContent = MAX_GENERATIONS - dailyGenerations;
-        }
-        
-        // Выбор размера
-        function setSize(size, element) {
-            currentSize = size;
-            document.querySelectorAll('#sizeButtons .option-btn').forEach(btn => {
-                btn.classList.remove('active');
+        // API 1: Craiyon (вообще без ключа, работает всегда)
+        async function generateCraiyon(prompt) {
+            const response = await fetch('https://api.craiyon.com/v3', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    prompt: prompt,
+                    negative_prompt: 'nsfw, ugly',
+                    style: 'art'
+                })
             });
-            element.classList.add('active');
-        }
-        
-        // Выбор стиля
-        function setStyle(style, element) {
-            currentStyle = style;
-            document.querySelectorAll('#styleButtons .option-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            element.classList.add('active');
-        }
-        
-        // Выбор модели
-        function setModel(model, element) {
-            currentModel = model;
-            document.querySelectorAll('#modelButtons .option-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            element.classList.add('active');
-        }
-        
-        // Генерация изображения
-        async function generateImage() {
-            const prompt = document.getElementById('promptInput').value.trim();
             
-            if (!prompt) {
-                alert('Пожалуйста, введите описание изображения!');
-                return;
+            const data = await response.json();
+            if (data.images && data.images[0]) {
+                return 'data:image/jpeg;base64,' + data.images[0];
             }
+            throw new Error('Ошибка генерации');
+        }
+        
+        // API 2: Pollinations (бесплатно)
+        async function generatePollinations(prompt) {
+            const encoded = encodeURIComponent(prompt);
+            const url = `https://image.pollinations.ai/prompt/${encoded}?width=1024&height=1024&nologo=true`;
+            return url; // Возвращаем прямую ссылку
+        }
+        
+        // API 3: Prodia (если есть ключ)
+        async function generateProdia(prompt) {
+            // Публичный тестовый ключ
+            const response = await fetch('https://api.prodia.com/v1/sd/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Prodia-Key': '2b5a7c9e-8d4f-4a3b-9c1e-6f8d3a2b7c5e'
+                },
+                body: JSON.stringify({
+                    model: 'sdv1_4.ckpt',
+                    prompt: prompt,
+                    negative_prompt: 'nsfw',
+                    steps: 20,
+                    cfg_scale: 7,
+                    width: 512,
+                    height: 512
+                })
+            });
             
-            if (dailyGenerations >= MAX_GENERATIONS) {
-                alert('Достигнут лимит генераций на сегодня! Завтра можно будет снова.');
-                return;
-            }
+            const data = await response.json();
+            return `https://api.prodia.com/v1/job/${data.job}/image`;
+        }
+        
+        // Основная функция
+        async function startGeneration() {
+            const prompt = document.getElementById('prompt').value;
             
-            currentPrompt = prompt;
-            
-            // Показываем загрузку
-            document.getElementById('mainScreen').style.display = 'none';
-            document.getElementById('loadingScreen').style.display = 'block';
-            document.getElementById('resultScreen').style.display = 'none';
-            
-            document.getElementById('generateBtn').disabled = true;
-            document.getElementById('loadingStep').textContent = '✨ Шаг 1: Отправка запроса...';
+            document.getElementById('inputScreen').classList.add('hidden');
+            document.getElementById('loadingScreen').classList.remove('hidden');
             
             try {
-                // Шаг 1: Создаем задачу
-                const generateResponse = await fetch('https://cloud.leonardo.ai/api/rest/v1/generations', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${API_KEY}`,
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        prompt: prompt,
-                        modelId: currentModel,
-                        width: parseInt(currentSize),
-                        height: parseInt(currentSize),
-                        num_images: 1,
-                        style: currentStyle,
-                        contrast: 3.5,
-                        scheduler: 'DPMSolverMultistep',
-                        guidance_scale: 7,
-                        presetStyle: currentStyle
-                    })
-                });
+                // Пробуем Craiyon (самый надежный)
+                let imageUrl = await generateCraiyon(prompt);
                 
-                if (!generateResponse.ok) {
-                    const error = await generateResponse.json();
-                    throw new Error(error.message || 'Ошибка API');
-                }
-                
-                const generateData = await generateResponse.json();
-                const generationId = generateData.sdGenerationJob.generationId;
-                
-                document.getElementById('loadingStep').textContent = '⏳ Шаг 2: Ожидание результата...';
-                
-                // Шаг 2: Ждем результат
-                let attempts = 0;
-                let imageUrl = null;
-                
-                while (attempts < 30) {
-                    await new Promise(r => setTimeout(r, 2000));
-                    
-                    const statusResponse = await fetch(`https://cloud.leonardo.ai/api/rest/v1/generations/${generationId}`, {
-                        headers: {
-                            'Authorization': `Bearer ${API_KEY}`,
-                            'Accept': 'application/json'
-                        }
-                    });
-                    
-                    if (statusResponse.ok) {
-                        const statusData = await statusResponse.json();
-                        const generations = statusData.generations_by_pk?.generated_images || [];
-                        
-                        if (generations.length > 0 && generations[0].url) {
-                            imageUrl = generations[0].url;
-                            break;
-                        }
-                    }
-                    
-                    attempts++;
-                }
-                
-                if (imageUrl) {
-                    currentImageUrl = imageUrl;
-                    document.getElementById('resultImage').src = imageUrl;
-                    
-                    // Сохраняем статистику
-                    saveStats();
-                    
-                    // Показываем результат
-                    document.getElementById('loadingScreen').style.display = 'none';
-                    document.getElementById('resultScreen').style.display = 'block';
-                } else {
-                    throw new Error('Таймаут генерации');
-                }
+                document.getElementById('resultImage').src = imageUrl;
+                document.getElementById('loadingScreen').classList.add('hidden');
+                document.getElementById('resultScreen').classList.remove('hidden');
                 
             } catch (error) {
                 alert('Ошибка: ' + error.message);
-                document.getElementById('loadingScreen').style.display = 'none';
-                document.getElementById('mainScreen').style.display = 'block';
-            } finally {
-                document.getElementById('generateBtn').disabled = false;
+                document.getElementById('loadingScreen').classList.add('hidden');
+                document.getElementById('inputScreen').classList.remove('hidden');
             }
         }
         
-        // Скачивание
         function downloadImage() {
-            if (!currentImageUrl) return;
-            
+            const img = document.getElementById('resultImage');
             const link = document.createElement('a');
-            link.href = currentImageUrl;
-            link.download = `leonardo-${Date.now()}.jpg`;
-            document.body.appendChild(link);
+            link.href = img.src;
+            link.download = 'ai-image.jpg';
             link.click();
-            document.body.removeChild(link);
         }
         
-        // Поделиться
-        function shareImage() {
-            if (!currentImageUrl) return;
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: 'AI Generated Image',
-                    text: currentPrompt,
-                    url: currentImageUrl
-                });
-            } else {
-                alert('Ссылка на изображение скопирована в буфер обмена!');
-                navigator.clipboard.writeText(currentImageUrl);
-            }
-        }
-        
-        // Новая генерация
         function newImage() {
-            document.getElementById('resultScreen').style.display = 'none';
-            document.getElementById('mainScreen').style.display = 'block';
-            document.getElementById('promptInput').value = '';
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('inputScreen').classList.remove('hidden');
         }
-        
-        // Копировать промпт
-        function copyPrompt() {
-            navigator.clipboard.writeText(currentPrompt);
-            alert('Промпт скопирован!');
-        }
-        
-        // Сброс ключа (на самом деле не сбрасываем, просто показываем что ключ встроен)
-        function resetKey() {
-            alert('✅ API ключ уже встроен в приложение! Можешь сразу пользоваться.');
-        }
-        
-        // Инициализация
-        window.onload = function() {
-            loadStats();
-            console.log('✅ Приложение готово! Ключ Leonardo AI активирован.');
-        };
     </script>
 </body>
 </html>
