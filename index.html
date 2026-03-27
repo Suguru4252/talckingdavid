@@ -2,1275 +2,1408 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Мой Говорящий Артем - Виртуальный друг</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
+    <title>Rucoy Online</title>
     <style>
         * {
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
-
+        
         body {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        .bg-particle {
+            background: #0a0c12;
+            overflow: hidden;
             position: fixed;
-            pointer-events: none;
-            font-size: 20px;
-            animation: floatParticle 15s linear infinite;
-            opacity: 0.2;
-            z-index: 0;
-        }
-
-        @keyframes floatParticle {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.2; }
-            90% { opacity: 0.2; }
-            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
-        }
-
-        .game-card {
-            max-width: 750px;
             width: 100%;
-            margin: 20px auto;
-            background: linear-gradient(145deg, #fff9f0, #fff0e0);
-            border-radius: 40px;
-            overflow: hidden;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
-            position: relative;
-            z-index: 10;
-        }
-
-        .stats-bar {
-            background: linear-gradient(135deg, #ff9966, #ff5e62);
-            padding: 10px 12px;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 5px;
-        }
-
-        .stat {
-            background: rgba(255,255,255,0.95);
-            border-radius: 25px;
-            padding: 3px 8px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-weight: bold;
-            font-size: 0.65rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .bar-container {
-            width: 40px;
-            height: 4px;
-            background: #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .bar-fill {
             height: 100%;
-            transition: width 0.3s ease;
+            font-family: 'Courier New', monospace;
+            touch-action: none;
         }
-
-        .character-area {
-            background: linear-gradient(145deg, #a8edea, #fed6e3);
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            position: relative;
-            transition: background 0.3s;
-            overflow: hidden;
-            min-height: 300px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .character-area::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
-            animation: rotateShine 12s linear infinite;
-            pointer-events: none;
-        }
-
-        @keyframes rotateShine {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .character-container {
-            position: relative;
-            display: inline-block;
-            z-index: 2;
-        }
-
-        #artemEmoji {
-            font-size: 110px;
-            filter: drop-shadow(12px 16px 20px rgba(0,0,0,0.25));
-            transition: all 0.1s ease;
-            display: inline-block;
-            cursor: pointer;
-            position: relative;
-            z-index: 2;
-        }
-
-        .outfit-accessory {
-            position: absolute;
-            font-size: 40px;
-            pointer-events: none;
-            z-index: 3;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-            animation: accessoryFloat 2s ease-in-out infinite;
-        }
-
-        @keyframes accessoryFloat {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-3px); }
-        }
-
-        .outfit-hat { top: -28px; left: 50%; transform: translateX(-50%); }
-        .outfit-crown { top: -35px; left: 50%; transform: translateX(-50%); font-size: 48px; }
-        .outfit-glasses { top: 25px; left: 50%; transform: translateX(-50%); font-size: 38px; }
-        .outfit-scarf { top: 55px; left: 50%; transform: translateX(-50%); font-size: 38px; }
-        .outfit-cape { top: 35px; left: 50%; transform: translateX(-50%); font-size: 48px; }
-        .outfit-earrings { top: 35px; left: 30%; font-size: 30px; }
-        .outfit-earrings-right { top: 35px; right: 30%; font-size: 30px; }
-        .outfit-bow { top: 20px; left: 70%; font-size: 32px; }
-        .outfit-flower { top: 15px; left: 25%; font-size: 32px; }
-        .outfit-mask { top: 45px; left: 50%; transform: translateX(-50%); font-size: 35px; }
-        .outfit-necklace { top: 70px; left: 50%; transform: translateX(-50%); font-size: 32px; }
-        .outfit-bracelet { top: 85px; left: 20%; font-size: 28px; }
-        .outfit-bracelet-right { top: 85px; right: 20%; font-size: 28px; }
-        .outfit-wings { top: 20px; left: 50%; transform: translateX(-50%); font-size: 55px; }
-        .outfit-halo { top: -25px; left: 50%; transform: translateX(-50%); font-size: 45px; }
-        .outfit-devil { top: -20px; left: 50%; transform: translateX(-50%); font-size: 40px; }
-        .outfit-pirate { top: -15px; left: 50%; transform: translateX(-50%); font-size: 42px; }
-        .outfit-ninja { top: 20px; left: 50%; transform: translateX(-50%); font-size: 38px; }
-
-        .breathing {
-            animation: breathe 3s ease-in-out infinite;
-        }
-
-        @keyframes breathe {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-        }
-
-        .speech-bubble {
-            background: white;
-            border-radius: 25px;
-            padding: 10px 18px;
-            display: inline-block;
-            margin-top: 15px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #5a3e2b;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            border: 2px solid #ffb347;
-            position: relative;
-            z-index: 2;
-        }
-
-        .action-panel {
-            padding: 10px;
-            background: #fff5e8;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-            border-bottom: 1px solid #ffe0b5;
-        }
-
-        .action-btn {
-            background: linear-gradient(135deg, #ffb347, #ff8c33);
-            border: none;
-            padding: 6px 3px;
-            border-radius: 35px;
-            font-weight: bold;
-            font-size: 0.65rem;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            cursor: pointer;
-            transition: all 0.1s;
-            font-family: inherit;
-            box-shadow: 0 2px 0 #c16f1a;
-        }
-
-        .action-btn:active {
-            transform: translateY(2px);
-            box-shadow: 0 1px 0 #c16f1a;
-        }
-
-        .action-btn span:first-child {
-            font-size: 1.1rem;
-        }
-
-        .tabs {
-            display: flex;
-            background: #ffefdf;
-            padding: 0 8px;
-            gap: 2px;
-            flex-wrap: wrap;
-        }
-
-        .tab {
-            flex: 1;
-            text-align: center;
-            padding: 6px 3px;
-            background: transparent;
-            border: none;
-            font-weight: bold;
-            color: #a56b2f;
-            cursor: pointer;
-            font-size: 0.65rem;
-            border-radius: 12px 12px 0 0;
-            transition: all 0.2s;
-        }
-
-        .tab.active {
-            background: white;
-            color: #ff8c33;
-        }
-
-        .tab-content {
-            display: none;
-            padding: 12px;
-            background: #fff5ea;
-            min-height: 280px;
-        }
-
-        .tab-content.active {
+        
+        canvas {
             display: block;
-            animation: fadeIn 0.3s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .game-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-        }
-
-        .feature-card {
-            background: white;
-            border-radius: 15px;
-            padding: 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 2px solid #ffd89a;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        .feature-card:active {
-            transform: scale(0.97);
-            background: #fff0e0;
-        }
-
-        .feature-card.active-outfit {
-            border: 3px solid #4caf50;
-            background: #e8f5e9;
-            transform: scale(1.02);
-        }
-
-        .feature-card.owned-outfit {
-            border: 2px solid #ffd700;
-            background: #fff9c4;
-        }
-
-        .feature-icon {
-            font-size: 1.5rem;
-            margin-bottom: 3px;
-        }
-
-        .feature-title {
-            font-weight: bold;
-            color: #8b5a2b;
-            font-size: 0.65rem;
-        }
-
-        .feature-cost {
-            font-size: 0.55rem;
-            color: #ff8c33;
-            margin-top: 2px;
-        }
-
-        .bonus-btn, .save-btn, .skill-btn {
-            background: linear-gradient(135deg, #ffd700, #ffb347);
-            border-radius: 25px;
-            padding: 8px;
-            text-align: center;
-            font-weight: bold;
-            margin-top: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.75rem;
-        }
-
-        .bonus-btn:active, .save-btn:active, .skill-btn:active {
-            transform: scale(0.98);
-        }
-
-        .achievement-badge, .skill-badge {
-            background: linear-gradient(135deg, #ffd700, #ffb347);
-            border-radius: 15px;
-            padding: 5px;
-            margin: 3px 0;
-            font-size: 0.6rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .pet-stats {
-            background: #ffe0b5;
-            border-radius: 18px;
-            padding: 8px;
-            margin-top: 8px;
-            text-align: center;
-            font-size: 0.65rem;
-        }
-
-        footer {
-            text-align: center;
-            padding: 6px;
-            font-size: 0.5rem;
-            background: #f7e5d2;
-            color: #7a5a3a;
-        }
-
-        .particle {
             position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            background: #1a2a1a;
+        }
+        
+        .corner-buttons {
+            position: fixed;
+            z-index: 100;
+            pointer-events: auto;
+        }
+        .top-left { top: 12px; left: 12px; display: flex; gap: 8px; }
+        .top-right { top: 12px; right: 12px; display: flex; gap: 8px; }
+        .bottom-left { bottom: 12px; left: 12px; display: flex; gap: 8px; }
+        .bottom-right { bottom: 12px; right: 12px; display: flex; gap: 8px; }
+        
+        .mini-btn {
+            background: rgba(44, 47, 74, 0.85);
+            backdrop-filter: blur(4px);
+            border: 1px solid #ffaa55;
+            color: #ffcc88;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 6px 10px;
+            border-radius: 20px;
+            box-shadow: 0 2px 0 #121420;
+            touch-action: manipulation;
+            cursor: pointer;
+            font-family: monospace;
+            transition: 0.03s linear;
+            text-align: center;
+            min-width: 55px;
+        }
+        .mini-btn:active { transform: translateY(2px); }
+        .fight-mini { background: rgba(200, 80, 60, 0.85); border-color: #ff8866; color: white; }
+        .skill-mini { background: rgba(106, 78, 158, 0.85); border-color: #c88eff; }
+        .class-mini { background: rgba(60, 100, 80, 0.85); border-color: #88ffaa; }
+        
+        .nickname-display {
+            position: fixed;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            padding: 4px 12px;
+            border-radius: 20px;
+            color: #ffcc88;
+            font-size: 12px;
+            z-index: 100;
             pointer-events: none;
-            font-size: 18px;
-            animation: particleFloat 1s ease-out forwards;
-            z-index: 1000;
+            font-family: monospace;
         }
-
-        @keyframes particleFloat {
-            0% { opacity: 1; transform: translate(0, 0) scale(1); }
-            100% { opacity: 0; transform: translate(var(--x, 50px), var(--y, -100px)) scale(0.5); }
+        .portal-progress {
+            position: fixed;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            padding: 4px 12px;
+            border-radius: 20px;
+            color: #88ffaa;
+            font-size: 11px;
+            z-index: 100;
+            pointer-events: none;
+            font-family: monospace;
+            white-space: nowrap;
         }
-
-        .tap-effect {
-            animation: bounce 0.2s ease;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(0.95); }
-        }
-
-        @media (max-width: 550px) {
-            .game-grid { grid-template-columns: repeat(3, 1fr); }
-            .stats-bar .stat { font-size: 0.55rem; padding: 2px 6px; }
-            .action-btn { font-size: 0.55rem; }
-            .action-btn span:first-child { font-size: 0.9rem; }
-            #artemEmoji { font-size: 80px; }
-            .outfit-accessory { font-size: 28px; }
+        @media (max-width: 700px) {
+            .mini-btn { font-size: 10px; padding: 4px 8px; min-width: 45px; }
+            .nickname-display { font-size: 10px; top: 8px; }
+            .portal-progress { font-size: 9px; bottom: 8px; }
         }
     </style>
 </head>
 <body>
-<div class="game-card">
-    <!-- Статистика -->
-    <div class="stats-bar">
-        <div class="stat"><span>🍔</span> <span id="hungerVal">100</span>%<div class="bar-container"><div class="bar-fill" id="hungerBar" style="background:#4caf50; width:100%"></div></div></div>
-        <div class="stat"><span>😊</span> <span id="happyVal">100</span>%<div class="bar-container"><div class="bar-fill" id="happyBar" style="background:#ff9800; width:100%"></div></div></div>
-        <div class="stat"><span>💤</span> <span id="energyVal">100</span>%<div class="bar-container"><div class="bar-fill" id="energyBar" style="background:#9c27b0; width:100%"></div></div></div>
-        <div class="stat"><span>🧼</span> <span id="cleanVal">100</span>%<div class="bar-container"><div class="bar-fill" id="cleanBar" style="background:#00bcd4; width:100%"></div></div></div>
-        <div class="stat"><span>⭐</span> <span id="coinsVal">500</span></div>
-        <div class="stat"><span>💎</span> <span id="crystalsVal">0</span></div>
-        <div class="stat"><span>🎮</span> Ур.<span id="levelVal">1</span></div>
-    </div>
-
-    <!-- Персонаж с аксессуарами -->
-    <div class="character-area" id="characterArea">
-        <div class="character-container">
-            <div id="artemEmoji" class="breathing">👨‍🦰</div>
-            <!-- Все аксессуары -->
-            <div id="outfitHat" class="outfit-accessory outfit-hat" style="display:none;">🧢</div>
-            <div id="outfitTopHat" class="outfit-accessory outfit-hat" style="display:none;">🎩</div>
-            <div id="outfitCrown" class="outfit-accessory outfit-crown" style="display:none;">👑</div>
-            <div id="outfitGlasses" class="outfit-accessory outfit-glasses" style="display:none;">🕶️</div>
-            <div id="outfitScarf" class="outfit-accessory outfit-scarf" style="display:none;">🧣</div>
-            <div id="outfitCape" class="outfit-accessory outfit-cape" style="display:none;">🦸</div>
-            <div id="outfitEarrings" class="outfit-accessory outfit-earrings" style="display:none;">💎</div>
-            <div id="outfitBow" class="outfit-accessory outfit-bow" style="display:none;">🎀</div>
-            <div id="outfitFlower" class="outfit-accessory outfit-flower" style="display:none;">🌸</div>
-            <div id="outfitMask" class="outfit-accessory outfit-mask" style="display:none;">🎭</div>
-            <div id="outfitNecklace" class="outfit-accessory outfit-necklace" style="display:none;">📿</div>
-            <div id="outfitWings" class="outfit-accessory outfit-wings" style="display:none;">🪽</div>
-            <div id="outfitHalo" class="outfit-accessory outfit-halo" style="display:none;">😇</div>
-            <div id="outfitDevil" class="outfit-accessory outfit-devil" style="display:none;">😈</div>
-            <div id="outfitPirate" class="outfit-accessory outfit-pirate" style="display:none;">🏴‍☠️</div>
-            <div id="outfitNinja" class="outfit-accessory outfit-ninja" style="display:none;">🥷</div>
-            <div id="outfitBracelet" class="outfit-accessory outfit-bracelet" style="display:none;">💫</div>
-        </div>
-        <div id="speechText" class="speech-bubble">✨ Привет! Я Артем! ✨</div>
-    </div>
-
-    <!-- Кнопки действий -->
-    <div class="action-panel">
-        <button class="action-btn" id="feedBtn"><span>🍕</span> Кормить</button>
-        <button class="action-btn" id="playBtn"><span>⚽</span> Играть</button>
-        <button class="action-btn" id="sleepBtn"><span>😴</span> Спать</button>
-        <button class="action-btn" id="cleanBtn"><span>🧼</span> Мыть</button>
-        <button class="action-btn" id="petBtn"><span>✋</span> Гладить</button>
-        <button class="action-btn" id="danceBtn"><span>💃</span> Танцы</button>
-        <button class="action-btn" id="readBtn"><span>📚</span> Читать</button>
-        <button class="action-btn" id="cookBtn"><span>🍳</span> Готовить</button>
-    </div>
-
-    <!-- Вкладки -->
-    <div class="tabs">
-        <button class="tab active" data-tab="games">🎮 Игры</button>
-        <button class="tab" data-tab="shop">🛍️ Магазин</button>
-        <button class="tab" data-tab="outfits">👕 Украшения</button>
-        <button class="tab" data-tab="pets">🐾 Питомец</button>
-        <button class="tab" data-tab="room">🏠 Комната</button>
-        <button class="tab" data-tab="skills">💪 Навыки</button>
-        <button class="tab" data-tab="quests">📋 Квесты</button>
-        <button class="tab" data-tab="achievements">🏆 Достиж</button>
-    </div>
-
-    <!-- Игры -->
-    <div class="tab-content active" id="games-tab">
-        <div class="game-grid">
-            <div class="feature-card" data-game="fish"><div class="feature-icon">🐟</div><div class="feature-title">Рыбалка</div><div class="feature-cost">+10-35⭐</div></div>
-            <div class="feature-card" data-game="exercise"><div class="feature-icon">🏃‍♂️</div><div class="feature-title">Зарядка</div><div class="feature-cost">+20💤</div></div>
-            <div class="feature-card" data-game="quiz"><div class="feature-icon">❓</div><div class="feature-title">Викторина</div><div class="feature-cost">+20⭐</div></div>
-            <div class="feature-card" data-game="memory"><div class="feature-icon">🧠</div><div class="feature-title">Память</div><div class="feature-cost">+25⭐</div></div>
-            <div class="feature-card" data-game="darts"><div class="feature-icon">🎯</div><div class="feature-title">Дартс</div><div class="feature-cost">+15-30⭐</div></div>
-            <div class="feature-card" data-game="music"><div class="feature-icon">🎵</div><div class="feature-title">Музыка</div><div class="feature-cost">+15😊</div></div>
-            <div class="feature-card" data-game="slot"><div class="feature-icon">🎰</div><div class="feature-title">Слоты</div><div class="feature-cost">10-500⭐</div></div>
-            <div class="feature-card" data-game="racing"><div class="feature-icon">🏎️</div><div class="feature-title">Гонки</div><div class="feature-cost">20-100⭐</div></div>
-        </div>
-        <div class="bonus-btn" id="dailyBonus">🎁 Ежедневный бонус: ЗАБРАТЬ</div>
-        <div class="save-btn" id="saveBtn">💾 Сохранить игру</div>
-    </div>
-
-    <!-- Магазин -->
-    <div class="tab-content" id="shop-tab">
-        <div class="game-grid">
-            <div class="feature-card" data-shop="pizza"><div class="feature-icon">🍕</div><div class="feature-title">Пицца</div><div class="feature-cost">20⭐ +40🍔</div></div>
-            <div class="feature-card" data-shop="toy"><div class="feature-icon">🧸</div><div class="feature-title">Игрушка</div><div class="feature-cost">30⭐ +35😊</div></div>
-            <div class="feature-card" data-shop="energy"><div class="feature-icon">⚡</div><div class="feature-title">Энергетик</div><div class="feature-cost">15⭐ +30💤</div></div>
-            <div class="feature-card" data-shop="cake"><div class="feature-icon">🎂</div><div class="feature-title">Торт</div><div class="feature-cost">50⭐ +60🍔</div></div>
-            <div class="feature-card" data-shop="soap"><div class="feature-icon">🧼</div><div class="feature-title">Мыло</div><div class="feature-cost">10⭐ +25🧼</div></div>
-            <div class="feature-card" data-shop="vitamins"><div class="feature-icon">💊</div><div class="feature-title">Витамины</div><div class="feature-cost">40⭐ +20 всем</div></div>
-        </div>
-    </div>
-
-    <!-- Украшения (одежда) -->
-    <div class="tab-content" id="outfits-tab">
-        <div class="game-grid" id="outfitsGrid"></div>
-        <div id="currentOutfit" class="pet-stats" style="margin-top:10px;">✨ Надето: Классика</div>
-        <div class="save-btn" id="resetOutfitBtn" style="margin-top:8px; background:#ff8c33;">🔄 Снять все украшения</div>
-    </div>
-
-    <!-- Питомец -->
-    <div class="tab-content" id="pets-tab">
-        <div class="game-grid">
-            <div class="feature-card" data-pet="cat"><div class="feature-icon">🐱</div><div class="feature-title">Котенок</div><div class="feature-cost">150⭐</div></div>
-            <div class="feature-card" data-pet="dog"><div class="feature-icon">🐶</div><div class="feature-title">Щенок</div><div class="feature-cost">200⭐</div></div>
-            <div class="feature-card" data-pet="bird"><div class="feature-icon">🐦</div><div class="feature-title">Птичка</div><div class="feature-cost">100⭐</div></div>
-            <div class="feature-card" data-pet="hamster"><div class="feature-icon">🐹</div><div class="feature-title">Хомяк</div><div class="feature-cost">120⭐</div></div>
-            <div class="feature-card" data-pet="fox"><div class="feature-icon">🦊</div><div class="feature-title">Лисенок</div><div class="feature-cost">300⭐</div></div>
-            <div class="feature-card" data-pet="panda"><div class="feature-icon">🐼</div><div class="feature-title">Панда</div><div class="feature-cost">500⭐</div></div>
-        </div>
-        <div id="petDisplay" class="pet-stats">🐾 Нет питомца. Купи друга!</div>
-    </div>
-
-    <!-- Комната -->
-    <div class="tab-content" id="room-tab">
-        <div class="game-grid">
-            <div class="feature-card" data-room="forest"><div class="feature-icon">🌳</div><div class="feature-title">Лес</div><div class="feature-cost">80⭐</div></div>
-            <div class="feature-card" data-room="beach"><div class="feature-icon">🌊</div><div class="feature-title">Пляж</div><div class="feature-cost">80⭐</div></div>
-            <div class="feature-card" data-room="night"><div class="feature-icon">🌙</div><div class="feature-title">Ночь</div><div class="feature-cost">80⭐</div></div>
-            <div class="feature-card" data-room="space"><div class="feature-icon">🚀</div><div class="feature-title">Космос</div><div class="feature-cost">120⭐</div></div>
-            <div class="feature-card" data-room="winter"><div class="feature-icon">❄️</div><div class="feature-title">Зима</div><div class="feature-cost">100⭐</div></div>
-            <div class="feature-card" data-room="castle"><div class="feature-icon">🏰</div><div class="feature-title">Замок</div><div class="feature-cost">150⭐</div></div>
-        </div>
-    </div>
-
-    <!-- Навыки -->
-    <div class="tab-content" id="skills-tab">
-        <div id="skillsList"></div>
-        <div class="skill-btn" id="resetSkillsBtn">🔄 Сбросить навыки (100⭐)</div>
-    </div>
-
-    <!-- Квесты -->
-    <div class="tab-content" id="quests-tab">
-        <div id="dailyQuests"></div>
-        <div id="weeklyQuests" style="margin-top:10px;"></div>
-    </div>
-
-    <!-- Достижения -->
-    <div class="tab-content" id="achievements-tab">
-        <div id="achievementsList"></div>
+    <canvas id="gameCanvas"></canvas>
+    
+    <div class="corner-buttons top-right">
+        <button class="mini-btn" id="statsBtn">📊 СТАТ</button>
+        <button class="mini-btn" id="invBtn">🎒 ИНВ</button>
+        <button class="mini-btn" id="mapBtn">🗺️ КАРТА</button>
     </div>
     
-    <footer>✨ Нажми на Артема! Все купленные украшения сохраняются навсегда ✨</footer>
-</div>
+    <div class="corner-buttons bottom-left">
+        <button class="mini-btn" id="hpBtn">❤️ HP</button>
+        <button class="mini-btn" id="mpBtn">💙 MP</button>
+    </div>
+    
+    <div class="corner-buttons bottom-right">
+        <button class="mini-btn fight-mini" id="attackBtn">⚔️ АТАКА</button>
+        <button class="mini-btn skill-mini" id="skillBtn">✨ СКИЛЛ</button>
+    </div>
+    
+    <div class="corner-buttons" style="bottom: 12px; right: 90px; display: flex; gap: 6px;">
+        <button class="mini-btn class-mini" id="classWarriorBtn">⚔️</button>
+        <button class="mini-btn class-mini" id="classArcherBtn">🏹</button>
+        <button class="mini-btn class-mini" id="classMageBtn">🔮</button>
+    </div>
+    
+    <div class="nickname-display" id="nicknameDisplay"></div>
+    <div class="portal-progress" id="portalProgress"></div>
 
 <script>
-    // ==================== ИГРОВЫЕ ПЕРЕМЕННЫЕ ====================
-    let hunger = 100, happiness = 100, energy = 100, cleanliness = 100;
-    let coins = 500, crystals = 0, level = 1, exp = 0;
-    let hasPet = null, currentRoom = 'default';
-    let lastDaily = Date.now();
-    
-    // ВЛАДЕНИЕ УКРАШЕНИЯМИ (сохраняется навсегда!)
-    let ownedOutfits = {
-        hat: false, topHat: false, crown: false, glasses: false, scarf: false,
-        cape: false, earrings: false, bow: false, flower: false, mask: false,
-        necklace: false, wings: false, halo: false, devil: false, pirate: false,
-        ninja: false, bracelet: false
-    };
-    
-    // НАДЕТЫЕ УКРАШЕНИЯ (что сейчас на персонаже)
-    let activeOutfits = {
-        hat: false, topHat: false, crown: false, glasses: false, scarf: false,
-        cape: false, earrings: false, bow: false, flower: false, mask: false,
-        necklace: false, wings: false, halo: false, devil: false, pirate: false,
-        ninja: false, bracelet: false
-    };
-    
-    // Данные об украшениях
-    let outfitsData = {
-        classic: { name: "👕 Классика", price: 0, type: "base", icon: "👕", emoji: null, position: null, category: "base" },
-        hat: { name: "🧢 Бейсболка", price: 50, type: "hat", icon: "🧢", emoji: "🧢", position: "hat", elementId: "outfitHat", category: "Головные уборы" },
-        topHat: { name: "🎩 Цилиндр", price: 80, type: "hat", icon: "🎩", emoji: "🎩", position: "topHat", elementId: "outfitTopHat", category: "Головные уборы" },
-        crown: { name: "👑 Корона", price: 200, type: "hat", icon: "👑", emoji: "👑", position: "crown", elementId: "outfitCrown", category: "Головные уборы" },
-        glasses: { name: "🕶️ Очки", price: 60, type: "face", icon: "🕶️", emoji: "🕶️", position: "glasses", elementId: "outfitGlasses", category: "Лицо" },
-        mask: { name: "🎭 Маска", price: 70, type: "face", icon: "🎭", emoji: "🎭", position: "mask", elementId: "outfitMask", category: "Лицо" },
-        scarf: { name: "🧣 Шарф", price: 55, type: "neck", icon: "🧣", emoji: "🧣", position: "scarf", elementId: "outfitScarf", category: "Шея" },
-        necklace: { name: "📿 Ожерелье", price: 90, type: "neck", icon: "📿", emoji: "📿", position: "necklace", elementId: "outfitNecklace", category: "Шея" },
-        cape: { name: "🦸 Плащ", price: 100, type: "back", icon: "🦸", emoji: "🦸", position: "cape", elementId: "outfitCape", category: "Спина" },
-        wings: { name: "🪽 Крылья", price: 250, type: "back", icon: "🪽", emoji: "🪽", position: "wings", elementId: "outfitWings", category: "Спина" },
-        earrings: { name: "💎 Серьги", price: 75, type: "ears", icon: "💎", emoji: "💎", position: "earrings", elementId: "outfitEarrings", category: "Уши" },
-        bow: { name: "🎀 Бантик", price: 45, type: "hair", icon: "🎀", emoji: "🎀", position: "bow", elementId: "outfitBow", category: "Волосы" },
-        flower: { name: "🌸 Цветок", price: 40, type: "hair", icon: "🌸", emoji: "🌸", position: "flower", elementId: "outfitFlower", category: "Волосы" },
-        halo: { name: "😇 Нимб", price: 180, type: "head", icon: "😇", emoji: "😇", position: "halo", elementId: "outfitHalo", category: "Голова" },
-        devil: { name: "😈 Рожки", price: 150, type: "head", icon: "😈", emoji: "😈", position: "devil", elementId: "outfitDevil", category: "Голова" },
-        pirate: { name: "🏴‍☠️ Повязка", price: 65, type: "head", icon: "🏴‍☠️", emoji: "🏴‍☠️", position: "pirate", elementId: "outfitPirate", category: "Голова" },
-        ninja: { name: "🥷 Повязка", price: 85, type: "head", icon: "🥷", emoji: "🥷", position: "ninja", elementId: "outfitNinja", category: "Голова" },
-        bracelet: { name: "💫 Браслет", price: 60, type: "hand", icon: "💫", emoji: "💫", position: "bracelet", elementId: "outfitBracelet", category: "Руки" }
-    };
-    
-    // Навыки
-    let skills = {
-        cooking: { level: 1, exp: 0, name: "🍳 Кулинария", effect: "Лучшая еда" },
-        gaming: { level: 1, exp: 0, name: "🎮 Игры", effect: "+5% монет за игры" },
-        intelligence: { level: 1, exp: 0, name: "📚 Ум", effect: "+10% опыта" },
-        cleanliness: { level: 1, exp: 0, name: "🧼 Чистота", effect: "Медленнее падает" },
-        endurance: { level: 1, exp: 0, name: "💪 Выносливость", effect: "-10% траты энергии" },
-        friendship: { level: 1, exp: 0, name: "🤝 Дружба", effect: "+15% настроения" }
-    };
-    
-    // Достижения
-    let achievements = {
-        feedCount: 0, playCount: 0, petCount: 0, gamesPlayed: 0, totalCoins: 0, cooks: 0
-    };
-    
-    // Квесты
-    let dailyQuests = {
-        feed: { name: "Покормить 3 раза", current: 0, target: 3, reward: 30, completed: false },
-        play: { name: "Поиграть 2 раза", current: 0, target: 2, reward: 20, completed: false },
-        pet: { name: "Погладить 5 раз", current: 0, target: 5, reward: 25, completed: false }
-    };
-    
-    let weeklyQuests = {
-        games: { name: "Сыграть 20 игр", current: 0, target: 20, reward: 200, completed: false },
-        coins: { name: "Заработать 500⭐", current: 0, target: 500, reward: 300, completed: false }
-    };
-    
-    let lastQuestReset = Date.now();
-    
-    let petBonuses = {
-        cat: { name: "🐱 Котенок", bonus: " +5 настроения/день" },
-        dog: { name: "🐶 Щенок", bonus: " защита от грусти" },
-        bird: { name: "🐦 Птичка", bonus: " +5⭐ в день" },
-        hamster: { name: "🐹 Хомяк", bonus: " копит монеты" },
-        fox: { name: "🦊 Лисенок", bonus: " x2 награды" },
-        panda: { name: "🐼 Панда", bonus: " медленнее падение параметров" }
-    };
-    
-    // Функция обновления внешнего вида
-    function updateCharacterAppearance() {
-        // Скрываем все
-        for (let key in outfitsData) {
-            if (outfitsData[key].elementId) {
-                let elem = document.getElementById(outfitsData[key].elementId);
-                if (elem) elem.style.display = 'none';
-            }
+    (function(){
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // ========== РАЗМЕР МИРА ==========
+        const TILE_SIZE = 50;
+        const MAP_W = 116;
+        const MAP_H = 92;
+        const WORLD_WIDTH = MAP_W * TILE_SIZE;
+        const WORLD_HEIGHT = MAP_H * TILE_SIZE;
+        
+        let cameraX = 0, cameraY = 0;
+        let canvasWidth = window.innerWidth;
+        let canvasHeight = window.innerHeight;
+        let walkCycle = 0;
+        
+        function resizeCanvas() {
+            canvasWidth = window.innerWidth;
+            canvasHeight = window.innerHeight;
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+        }
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            updateCamera();
+        });
+        resizeCanvas();
+        
+        // ========== ВСЯ БРОНЯ И ОРУЖИЕ ==========
+        const ALL_ARMOR = [
+            { id: "wooden", name: "Деревянная броня", def: 5, level: 1, price: 100, icon: "🪵" },
+            { id: "leather1", name: "Кожаная броня", def: 10, level: 3, price: 250, icon: "🧥" },
+            { id: "studded", name: "Шипованная броня", def: 18, level: 6, price: 500, icon: "🛡️" },
+            { id: "iron1", name: "Железная броня", def: 28, level: 10, price: 900, icon: "⚙️" },
+            { id: "steel", name: "Стальная броня", def: 40, level: 15, price: 1500, icon: "🔩" },
+            { id: "golden1", name: "Золотая броня", def: 55, level: 20, price: 2500, icon: "✨" },
+            { id: "mithril", name: "Мифриловая броня", def: 72, level: 30, price: 4000, icon: "🔮" },
+            { id: "runic1", name: "Руническая броня", def: 92, level: 40, price: 6000, icon: "📜" },
+            { id: "dragon1", name: "Драконья броня", def: 115, level: 50, price: 9000, icon: "🐉" },
+            { id: "titan", name: "Титановая броня", def: 142, level: 65, price: 13000, icon: "⛰️" },
+            { id: "crystal", name: "Кристальная броня", def: 175, level: 80, price: 18000, icon: "💎" },
+            { id: "shadow", name: "Теневая броня", def: 212, level: 100, price: 25000, icon: "🌑" },
+            { id: "holy", name: "Святая броня", def: 255, level: 120, price: 35000, icon: "✨" },
+            { id: "demonic", name: "Демоническая броня", def: 305, level: 150, price: 50000, icon: "😈" },
+            { id: "legendary1", name: "Легендарная броня", def: 365, level: 180, price: 75000, icon: "⭐" },
+            { id: "divine", name: "Божественная броня", def: 450, level: 200, price: 100000, icon: "👑" }
+        ];
+        
+        const ALL_WEAPONS = [
+            { id: "wooden_sword", name: "Деревянный меч", dmgMin: 8, dmgMax: 14, level: 1, price: 80, icon: "🪵", range: 55, type: "melee" },
+            { id: "iron_sword", name: "Железный меч", dmgMin: 14, dmgMax: 24, level: 5, price: 200, icon: "⚔️", range: 60, type: "melee" },
+            { id: "steel_sword", name: "Стальной меч", dmgMin: 22, dmgMax: 36, level: 10, price: 400, icon: "🗡️", range: 62, type: "melee" },
+            { id: "golden_sword", name: "Золотой меч", dmgMin: 32, dmgMax: 52, level: 20, price: 800, icon: "✨", range: 65, type: "melee" },
+            { id: "mithril_sword", name: "Мифриловый меч", dmgMin: 46, dmgMax: 74, level: 35, price: 1500, icon: "🔮", range: 68, type: "melee" },
+            { id: "dragon_sword", name: "Драконий меч", dmgMin: 64, dmgMax: 98, level: 55, price: 3000, icon: "🐉", range: 70, type: "melee" },
+            { id: "legendary_sword", name: "Легендарный меч", dmgMin: 88, dmgMax: 135, level: 80, price: 6000, icon: "⭐", range: 72, type: "melee" },
+            { id: "wooden_bow", name: "Деревянный лук", dmgMin: 10, dmgMax: 18, level: 1, price: 90, icon: "🏹", range: 150, type: "ranged" },
+            { id: "iron_bow", name: "Железный лук", dmgMin: 18, dmgMax: 32, level: 8, price: 300, icon: "🏹", range: 155, type: "ranged" },
+            { id: "steel_bow", name: "Стальной лук", dmgMin: 28, dmgMax: 48, level: 18, price: 700, icon: "🏹", range: 160, type: "ranged" },
+            { id: "golden_bow", name: "Золотой лук", dmgMin: 42, dmgMax: 70, level: 30, price: 1500, icon: "🏹", range: 165, type: "ranged" },
+            { id: "dragon_bow", name: "Драконий лук", dmgMin: 62, dmgMax: 98, level: 50, price: 3500, icon: "🏹", range: 170, type: "ranged" },
+            { id: "legendary_bow", name: "Легендарный лук", dmgMin: 88, dmgMax: 135, level: 80, price: 7000, icon: "⭐", range: 175, type: "ranged" },
+            { id: "wooden_staff", name: "Деревянный посох", dmgMin: 12, dmgMax: 20, level: 1, price: 85, icon: "🔮", range: 140, type: "mage" },
+            { id: "iron_staff", name: "Железный посох", dmgMin: 22, dmgMax: 38, level: 10, price: 350, icon: "🔮", range: 145, type: "mage" },
+            { id: "crystal_staff", name: "Кристальный посох", dmgMin: 38, dmgMax: 62, level: 25, price: 900, icon: "🔮", range: 150, type: "mage" },
+            { id: "dragon_staff", name: "Драконий посох", dmgMin: 58, dmgMax: 92, level: 45, price: 2500, icon: "🔮", range: 155, type: "mage" },
+            { id: "legendary_staff", name: "Легендарный посох", dmgMin: 85, dmgMax: 130, level: 75, price: 6000, icon: "⭐", range: 160, type: "mage" }
+        ];
+        
+        // ========== КАРТА МИРА ==========
+        let showMap = false;
+        let mapClickTarget = null;
+        let worldMap = Array(MAP_H).fill().map(() => Array(MAP_W).fill(0));
+        
+        function getMapColor(tile) {
+            if(tile === 0) return "#3a6c2a";
+            if(tile === 1) return "#88aa66";
+            if(tile === 2) return "#c9a87a";
+            if(tile === 3) return "#3c9e3c";
+            if(tile === 4) return "#6e6e7a";
+            if(tile === 5) return "#3a8cbb";
+            if(tile === 6) return "#7a6a5a";
+            return "#3a6c2a";
         }
         
-        // Показываем только надетые
-        for (let key in activeOutfits) {
-            if (activeOutfits[key] && outfitsData[key] && outfitsData[key].elementId) {
-                let elem = document.getElementById(outfitsData[key].elementId);
-                if (elem) {
-                    elem.style.display = 'block';
-                    elem.innerHTML = outfitsData[key].emoji;
+        // ========== МИРЫ ==========
+        let currentWorld = "forest";
+        let mobsKilledInWorld = 0;
+        const MOBS_NEEDED_FOR_PORTAL = 300;
+        let portalActive = false;
+        let portalX = 0, portalY = 0;
+        
+        const WORLDS = {
+            forest: { name: "🌲 Лес", bgColor1: "#4a8c3a", bgColor2: "#3a6c2a", mobMultiplier: 1.0, mobColors: ["#6f8c5a", "#8a7a6a", "#8b5a3a", "#b8b8cc", "#8a6a4a", "#c97a3a"] },
+            desert: { name: "🏜️ Пустыня", bgColor1: "#c9ae74", bgColor2: "#e0b87a", mobMultiplier: 1.5, mobColors: ["#c9a87a", "#b87c4a", "#a86a3a", "#d8b87a", "#c89a6a", "#e8c88a"] },
+            castle: { name: "🏰 Замок", bgColor1: "#4a5b6e", bgColor2: "#6c7f8f", mobMultiplier: 2.0, mobColors: ["#6a7a8a", "#8a9aaa", "#5a6a7a", "#7a8a9a", "#9aabbb", "#4a5a6a"] }
+        };
+        
+        // ========== СИСТЕМА СОХРАНЕНИЯ ==========
+        let playerNickname = null;
+        
+        function saveGame() {
+            if(!playerNickname) return;
+            const saveData = {
+                nickname: playerNickname,
+                x: player.x, y: player.y,
+                hp: player.hp, mp: player.mp,
+                level: player.level, exp: player.exp,
+                classType: player.classType,
+                gold: player.gold,
+                potionHp: player.potionHp, potionMp: player.potionMp,
+                potionBigHp: player.potionBigHp, potionBigMp: player.potionBigMp,
+                armorId: player.armorId, weaponId: player.weaponId,
+                currentWorld: currentWorld,
+                mobsKilledInWorld: mobsKilledInWorld,
+                stats: {
+                    mobsKilled: stats.mobsKilled,
+                    totalGold: stats.totalGold,
+                    totalDamage: stats.totalDamage,
+                    totalDamageTaken: stats.totalDamageTaken,
+                    startTime: stats.startTime
                 }
+            };
+            localStorage.setItem('rucoy_save_' + playerNickname, JSON.stringify(saveData));
+            localStorage.setItem('rucoy_last_nickname', playerNickname);
+        }
+        
+        function loadGame(nickname) {
+            const saveData = localStorage.getItem('rucoy_save_' + nickname);
+            if(saveData) {
+                const data = JSON.parse(saveData);
+                player.x = data.x; player.y = data.y;
+                player.hp = data.hp; player.mp = data.mp;
+                player.level = data.level; player.exp = data.exp;
+                player.classType = data.classType;
+                player.gold = data.gold;
+                player.potionHp = data.potionHp; player.potionMp = data.potionMp;
+                player.potionBigHp = data.potionBigHp; player.potionBigMp = data.potionBigMp;
+                if(data.armorId) player.armorId = data.armorId;
+                if(data.weaponId) player.weaponId = data.weaponId;
+                if(data.currentWorld) currentWorld = data.currentWorld;
+                if(data.mobsKilledInWorld) mobsKilledInWorld = data.mobsKilledInWorld;
+                if(data.stats) {
+                    stats.mobsKilled = data.stats.mobsKilled;
+                    stats.totalGold = data.stats.totalGold;
+                    stats.totalDamage = data.stats.totalDamage;
+                    stats.totalDamageTaken = data.stats.totalDamageTaken;
+                    stats.startTime = data.stats.startTime;
+                }
+                updateStatsFromLevel();
+                addMsg(`✨ Добро пожаловать обратно, ${nickname}! Уровень ${player.level}`);
+                updatePortalStatus();
+                return true;
+            }
+            return false;
+        }
+        
+        function updateStatsFromLevel() {
+            let c = CLASSES[player.classType];
+            let armor = getArmorById(player.armorId);
+            let weapon = getWeaponById(player.weaponId);
+            player.maxHp = c.hp + player.level * 15;
+            player.maxMp = c.mp + player.level * 11;
+            if(player.hp > player.maxHp) player.hp = player.maxHp;
+            if(player.mp > player.maxMp) player.mp = player.maxMp;
+            player.expToNext = 90 + player.level * 38;
+            player.defense = (armor ? armor.def : 5) + Math.floor(player.level * 1.2);
+            if(weapon) {
+                player.dmgMin = weapon.dmgMin + Math.floor(player.level * 2);
+                player.dmgMax = weapon.dmgMax + Math.floor(player.level * 2.8);
+                player.attackRange = weapon.range;
             }
         }
         
-        // Обновляем текст надетых украшений
-        let outfitText = [];
-        for (let key in activeOutfits) {
-            if (activeOutfits[key] && outfitsData[key]) {
-                outfitText.push(outfitsData[key].icon);
-            }
-        }
-        if (outfitText.length === 0) outfitText.push('👕 Классика');
-        document.getElementById('currentOutfit').innerHTML = `✨ Надето: ${outfitText.join(' + ')}`;
-    }
-    
-    function createParticles(x, y, emojis) {
-        for(let i = 0; i < 8; i++) {
-            let particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
-            particle.style.left = (x || window.innerWidth/2) + (Math.random() - 0.5) * 60 + 'px';
-            particle.style.top = (y || window.innerHeight/2) + (Math.random() - 0.5) * 60 + 'px';
-            particle.style.setProperty('--x', (Math.random() - 0.5) * 100 + 'px');
-            particle.style.setProperty('--y', -Math.random() * 150 - 50 + 'px');
-            document.body.appendChild(particle);
-            setTimeout(() => particle.remove(), 1000);
-        }
-    }
-    
-    function showNotification(text, isError = false) {
-        const notif = document.createElement('div');
-        notif.textContent = text;
-        notif.style.position = 'fixed';
-        notif.style.top = '20px';
-        notif.style.right = '20px';
-        notif.style.background = isError ? '#f44336' : '#4caf50';
-        notif.style.color = 'white';
-        notif.style.padding = '10px 18px';
-        notif.style.borderRadius = '40px';
-        notif.style.fontWeight = 'bold';
-        notif.style.zIndex = '1000';
-        notif.style.fontSize = '0.8rem';
-        notif.style.boxShadow = '0 5px 15px rgba(0,0,0,0.2)';
-        document.body.appendChild(notif);
-        setTimeout(() => notif.remove(), 2500);
-    }
-    
-    function showSpeech(text) {
-        const speechDiv = document.getElementById('speechText');
-        speechDiv.innerText = text;
-        setTimeout(() => {
-            if (speechDiv.innerText === text) {
-                let phrases = ["✨ Привет! Я Артем! ✨", "Как дела?", "Поиграем? ⚽", "Я тебя люблю! ❤️"];
-                speechDiv.innerText = phrases[Math.floor(Math.random() * phrases.length)];
-            }
-        }, 3000);
-    }
-    
-    function updateUI() {
-        hunger = Math.min(100, Math.max(0, hunger));
-        happiness = Math.min(100, Math.max(0, happiness));
-        energy = Math.min(100, Math.max(0, energy));
-        cleanliness = Math.min(100, Math.max(0, cleanliness));
+        function getArmorById(id) { return ALL_ARMOR.find(a => a.id === id); }
+        function getWeaponById(id) { return ALL_WEAPONS.find(w => w.id === id); }
         
-        document.getElementById('hungerBar').style.width = hunger + '%';
-        document.getElementById('happyBar').style.width = happiness + '%';
-        document.getElementById('energyBar').style.width = energy + '%';
-        document.getElementById('cleanBar').style.width = cleanliness + '%';
-        document.getElementById('hungerVal').innerText = Math.floor(hunger);
-        document.getElementById('happyVal').innerText = Math.floor(happiness);
-        document.getElementById('energyVal').innerText = Math.floor(energy);
-        document.getElementById('cleanVal').innerText = Math.floor(cleanliness);
-        document.getElementById('coinsVal').innerText = coins;
-        document.getElementById('crystalsVal').innerText = crystals;
-        document.getElementById('levelVal').innerText = level;
-        
-        updateEmoji();
-        updateRoomBackground();
-        updateSkillsUI();
-        updateQuestsUI();
-        updateAchievementsUI();
-        checkLevelUp();
-        applyPetBonus();
-        setupOutfitsGrid();
-    }
-    
-    function updateEmoji() {
-        let emoji = document.getElementById('artemEmoji');
-        let base = '👨‍🦰';
-        if (hunger < 20) base = '😫';
-        else if (energy < 20) base = '😴';
-        else if (cleanliness < 20) base = '😖';
-        else if (happiness < 30) base = '😢';
-        else if (happiness > 70 && hunger > 70) base = '😊';
-        
-        if (hasPet === 'cat') base += ' 🐱';
-        else if (hasPet === 'dog') base += ' 🐶';
-        else if (hasPet === 'bird') base += ' 🐦';
-        else if (hasPet === 'hamster') base += ' 🐹';
-        else if (hasPet === 'fox') base += ' 🦊';
-        else if (hasPet === 'panda') base += ' 🐼';
-        
-        emoji.innerHTML = base;
-    }
-    
-    function updateRoomBackground() {
-        const charArea = document.querySelector('.character-area');
-        const rooms = {
-            forest: "linear-gradient(145deg, #90EE90, #228B22)",
-            beach: "linear-gradient(145deg, #87CEEB, #F4A460)",
-            night: "linear-gradient(145deg, #191970, #483D8B)",
-            space: "linear-gradient(145deg, #0a0a2a, #1a1a4a)",
-            winter: "linear-gradient(145deg, #b0e0e6, #add8e6)",
-            castle: "linear-gradient(145deg, #b87333, #8b4513)",
-            default: "linear-gradient(145deg, #a8edea, #fed6e3)"
-        };
-        charArea.style.background = rooms[currentRoom] || rooms.default;
-    }
-    
-    function addExp(amount) {
-        let bonus = 1 + (skills.intelligence.level - 1) * 0.1;
-        exp += Math.floor(amount * bonus);
-        checkLevelUp();
-    }
-    
-    function checkLevelUp() {
-        let expNeeded = level * 100;
-        if (exp >= expNeeded) {
-            exp -= expNeeded;
-            level++;
-            coins += 50;
-            crystals += 5;
-            showSpeech(`🎉 УРОВЕНЬ ${level}! +50⭐ +5💎! 🎉`);
-            createParticles(null, null, ['🎉', '⭐', '✨', '🌟']);
-            updateUI();
-        }
-    }
-    
-    function applyPetBonus() {
-        if (hasPet === 'cat') happiness = Math.min(100, happiness + 2);
-        if (hasPet === 'bird') coins += 1;
-        if (hasPet === 'fox' && Math.random() < 0.1) coins += 5;
-    }
-    
-    // Действия
-    function feed() {
-        if (coins >= 5 && hunger < 95) {
-            coins -= 5;
-            hunger = Math.min(100, hunger + 25);
-            happiness = Math.min(100, happiness + 5);
-            achievements.feedCount++;
-            dailyQuests.feed.current++;
-            addExp(10);
-            showSpeech("Ням-ням! Вкусно! 🍕");
-            createParticles(null, null, ['🍕', '🍔', '🍎', '❤️']);
-            updateUI();
-        } else if (hunger >= 95) showSpeech("Я сыт! Спасибо! 😊");
-        else showSpeech("Нужно 5⭐ на еду!");
-    }
-    
-    function play() {
-        let energyCost = 12 * (1 - (skills.endurance.level - 1) * 0.05);
-        if (energy >= energyCost && hunger >= 20 && cleanliness >= 20) {
-            let gain = 12 + Math.floor(Math.random() * 10);
-            happiness = Math.min(100, happiness + gain);
-            energy -= energyCost;
-            cleanliness -= 3;
-            coins += 3;
-            achievements.playCount++;
-            dailyQuests.play.current++;
-            addExp(8);
-            showSpeech("Ура! Веселая игра! ⚽");
-            createParticles(null, null, ['⚽', '🎮', '🎲', '✨']);
-            updateUI();
-        } else if (energy < energyCost) showSpeech("Я устал... Нужно поспать! 😴");
-        else if (hunger < 20) showSpeech("Сначала покорми меня! 🍕");
-        else if (cleanliness < 20) showSpeech("Я грязный! Помой меня! 🧼");
-    }
-    
-    function sleep() {
-        let gain = 35 + Math.floor(Math.random() * 20);
-        energy = Math.min(100, energy + gain);
-        happiness = Math.min(100, happiness + 5);
-        addExp(5);
-        showSpeech("Zzz... Отдохнул! 💤");
-        createParticles(null, null, ['💤', '🌙', '⭐']);
-        updateUI();
-    }
-    
-    function clean() {
-        if (coins >= 3) {
-            coins -= 3;
-            cleanliness = Math.min(100, cleanliness + 35);
-            happiness = Math.min(100, happiness + 5);
-            addExp(5);
-            showSpeech("Спасибо! Я чистый! 🧼✨");
-            createParticles(null, null, ['💧', '✨', '🧼']);
-            updateUI();
-        } else showSpeech("Нужно 3⭐ на мыло!");
-    }
-    
-    function pet() {
-        happiness = Math.min(100, happiness + 12);
-        coins += 2;
-        achievements.petCount++;
-        dailyQuests.pet.current++;
-        addExp(4);
-        showSpeech("*Мурлыкает* Спасибо! ❤️");
-        createParticles(null, null, ['❤️', '💕', '💗']);
-        updateUI();
-    }
-    
-    function dance() {
-        if (energy >= 10) {
-            happiness = Math.min(100, happiness + 15);
-            energy -= 8;
-            addExp(6);
-            showSpeech("Танцуем! 💃🕺");
-            createParticles(null, null, ['💃', '🕺', '🎵', '✨']);
-            updateUI();
-        } else showSpeech("Слишком устал для танцев! 😴");
-    }
-    
-    function read() {
-        if (energy >= 5) {
-            addExp(12);
-            happiness = Math.min(100, happiness + 8);
-            energy -= 5;
-            showSpeech("📚 Интересная книга! +опыт");
-            createParticles(null, null, ['📚', '📖', '🧠']);
-            updateUI();
-        } else showSpeech("Устал читать... 😴");
-    }
-    
-    function cook() {
-        if (energy >= 8 && coins >= 10) {
-            coins -= 10;
-            hunger = Math.min(100, hunger + 40);
-            happiness = Math.min(100, happiness + 10);
-            achievements.cooks++;
-            addExp(15);
-            showSpeech("🍳 Приготовил вкусняшку! +40🍔");
-            createParticles(null, null, ['🍳', '🍲', '🥘', '✨']);
-            updateUI();
-        } else showSpeech("Нужно 10⭐ и энергия!");
-    }
-    
-    // Мини-игры
-    function playGame(game) {
-        let games = {
-            fish: () => { if(energy>=8) { let e=10+Math.random()*30; coins+=e; energy-=6; achievements.gamesPlayed++; weeklyQuests.games.current++; achievements.totalCoins+=e; weeklyQuests.coins.current+=e; addExp(10); showSpeech(`🐟 +${Math.floor(e)}⭐!`); createParticles(null,null,['🐟','🐠','⭐']); updateUI(); } else showSpeech("Нужна энергия!"); },
-            exercise: () => { if(hunger>=15) { let g=15+Math.random()*18; energy=Math.min(100,energy+g); hunger-=8; cleanliness-=5; addExp(10); showSpeech(`🏃 +${Math.floor(g)}💤!`); updateUI(); } else showSpeech("Сначала поешь!"); },
-            quiz: () => { let e=15+Math.random()*25; coins+=e; achievements.totalCoins+=e; weeklyQuests.coins.current+=e; achievements.gamesPlayed++; weeklyQuests.games.current++; happiness=Math.min(100,happiness+10); addExp(15); showSpeech(`❓ +${Math.floor(e)}⭐!`); updateUI(); },
-            memory: () => { let e=20+Math.random()*25; coins+=e; achievements.totalCoins+=e; weeklyQuests.coins.current+=e; achievements.gamesPlayed++; weeklyQuests.games.current++; addExp(18); showSpeech(`🧠 +${Math.floor(e)}⭐!`); updateUI(); },
-            darts: () => { if(energy>=5) { let e=15+Math.random()*25; coins+=e; achievements.totalCoins+=e; weeklyQuests.coins.current+=e; achievements.gamesPlayed++; energy-=4; addExp(10); showSpeech(`🎯 +${Math.floor(e)}⭐!`); updateUI(); } else showSpeech("Нужна энергия!"); },
-            music: () => { happiness=Math.min(100,happiness+15); addExp(8); showSpeech("🎵 +15😊!"); updateUI(); },
-            slot: () => { if(coins>=10) { coins-=10; let win=Math.random(); if(win<0.05) { let jackpot=200+Math.random()*300; coins+=jackpot; showSpeech(`🎰 ДЖЕКПОТ! +${Math.floor(jackpot)}⭐!!!`); } else if(win<0.3) { let prize=20+Math.random()*80; coins+=prize; showSpeech(`🎰 Выигрыш! +${Math.floor(prize)}⭐`); } else showSpeech("🎰 Попробуй еще раз!"); updateUI(); } else showSpeech("Нужно 10⭐!"); },
-            racing: () => { if(energy>=12) { let e=20+Math.random()*80; coins+=e; achievements.totalCoins+=e; weeklyQuests.coins.current+=e; energy-=10; addExp(12); showSpeech(`🏎️ Гонка! +${Math.floor(e)}⭐!`); updateUI(); } else showSpeech("Нужна энергия!"); }
-        };
-        if(games[game]) games[game]();
-    }
-    
-    // Магазин
-    function buyItem(item) {
-        let items = {
-            pizza: { cost:20, effect:()=>hunger=Math.min(100,hunger+40) },
-            toy: { cost:30, effect:()=>happiness=Math.min(100,happiness+35) },
-            energy: { cost:15, effect:()=>energy=Math.min(100,energy+30) },
-            cake: { cost:50, effect:()=>{ hunger=Math.min(100,hunger+60); happiness=Math.min(100,happiness+20); } },
-            soap: { cost:10, effect:()=>cleanliness=Math.min(100,cleanliness+25) },
-            vitamins: { cost:40, effect:()=>{ hunger=Math.min(100,hunger+15); happiness=Math.min(100,happiness+15); energy=Math.min(100,energy+15); cleanliness=Math.min(100,cleanliness+15); } }
-        };
-        if(items[item] && coins >= items[item].cost) {
-            coins -= items[item].cost;
-            items[item].effect();
-            updateUI();
-        } else showSpeech("Не хватает⭐!");
-    }
-    
-    function buyPet(petType) {
-        let pets = { cat:150, dog:200, bird:100, hamster:120, fox:300, panda:500 };
-        if(coins >= pets[petType] && !hasPet) {
-            coins -= pets[petType];
-            hasPet = petType;
-            document.getElementById('petDisplay').innerHTML = `🐾 Твой питомец: ${petBonuses[petType].name} ${petBonuses[petType].bonus}`;
-            showSpeech(`Ты купил ${petBonuses[petType].name}!`);
-            createParticles(null,null,['🐾','❤️','✨']);
-            updateUI();
-        } else if(hasPet) showSpeech("У тебя уже есть питомец!");
-        else showSpeech("Не хватает⭐!");
-    }
-    
-    function changeRoom(roomType) {
-        let roomNames = { forest:"🌳 Лес", beach:"🌊 Пляж", night:"🌙 Ночь", space:"🚀 Космос", winter:"❄️ Зима", castle:"🏰 Замок" };
-        if(coins >= 80 && currentRoom !== roomType) {
-            coins -= 80;
-            currentRoom = roomType;
-            showSpeech(`Комната: ${roomNames[roomType]}! 🏠`);
-            updateUI();
-        } else showSpeech("Не хватает⭐!");
-    }
-    
-    // ПОКУПКА УКРАШЕНИЯ (сохраняется навсегда!)
-    function buyOutfit(outfitKey) {
-        let outfit = outfitsData[outfitKey];
-        if (!outfit) return;
-        
-        // Классика - снимаем всё
-        if (outfitKey === 'classic') {
-            for (let key in activeOutfits) {
-                activeOutfits[key] = false;
-            }
-            showSpeech("Снял все украшения! 👕");
-            updateCharacterAppearance();
-            saveGame();
-            return;
-        }
-        
-        // Если уже есть в инвентаре (куплено раньше)
-        if (ownedOutfits[outfitKey]) {
-            // Переключаем надевание/снимание
-            activeOutfits[outfitKey] = !activeOutfits[outfitKey];
-            if (activeOutfits[outfitKey]) {
-                showSpeech(`Надел ${outfit.name}! ✨`);
-                createParticles(null, null, ['✨', '🌟', '💫']);
+        function updatePortalStatus() {
+            portalActive = (mobsKilledInWorld >= MOBS_NEEDED_FOR_PORTAL);
+            if(portalActive && currentWorld === "forest") {
+                portalX = safeZone.x + safeZone.width - 80;
+                portalY = safeZone.y + 60;
+            } else { portalActive = false; }
+            const progressPercent = Math.min(100, Math.floor(mobsKilledInWorld / MOBS_NEEDED_FOR_PORTAL * 100));
+            document.getElementById('portalProgress').innerText = `🚪 Прогресс портала: ${mobsKilledInWorld}/${MOBS_NEEDED_FOR_PORTAL} (${progressPercent}%)`;
+            if(portalActive) {
+                document.getElementById('portalProgress').innerHTML = `✨ ПОРТАЛ ОТКРЫТ! ✨ (Нажмите на него)`;
+                document.getElementById('portalProgress').style.color = "#ffaa66";
             } else {
-                showSpeech(`Снял ${outfit.name}`);
-            }
-            updateCharacterAppearance();
-            saveGame();
-            return;
-        }
-        
-        // Покупка нового украшения
-        if (coins >= outfit.price) {
-            coins -= outfit.price;
-            ownedOutfits[outfitKey] = true;
-            activeOutfits[outfitKey] = true;
-            showSpeech(`🎉 Купил ${outfit.name}! Теперь он у тебя навсегда! ✨`);
-            createParticles(null, null, ['🎉', '✨', '🌟', '💎']);
-            updateCharacterAppearance();
-            updateUI();
-            saveGame();
-        } else {
-            showSpeech(`Не хватает ${outfit.price}⭐! Поиграй в игры!`, true);
-        }
-    }
-    
-    function resetAllOutfits() {
-        for (let key in activeOutfits) {
-            activeOutfits[key] = false;
-        }
-        showSpeech("Снял все украшения! 👕");
-        updateCharacterAppearance();
-        saveGame();
-    }
-    
-    function upgradeSkill(skillName) {
-        let skill = skills[skillName];
-        let cost = skill.level * 50;
-        if(coins >= cost && skill.level < 10) {
-            coins -= cost;
-            skill.level++;
-            showSpeech(`${skill.name} уровень ${skill.level}!`);
-            updateUI();
-        } else if(skill.level >= 10) showSpeech("Максимальный уровень!");
-        else showSpeech(`Нужно ${cost}⭐!`);
-    }
-    
-    function updateSkillsUI() {
-        let html = '<div class="game-grid">';
-        for(let s in skills) {
-            let skill = skills[s];
-            html += `<div class="feature-card" onclick="upgradeSkill('${s}')">
-                <div class="feature-icon">${skill.name.split(' ')[0]}</div>
-                <div class="feature-title">${skill.name}</div>
-                <div class="feature-cost">Ур.${skill.level} | ${skill.level*50}⭐</div>
-                <div style="font-size:0.6rem;">${skill.effect}</div>
-            </div>`;
-        }
-        html += '</div>';
-        document.getElementById('skillsList').innerHTML = html;
-    }
-    
-    function updateQuestsUI() {
-        let dailyHtml = '<div class="pet-stats"><strong>📅 Ежедневные квесты</strong><br>';
-        for(let q in dailyQuests) {
-            let quest = dailyQuests[q];
-            let status = quest.completed ? '✅' : `${quest.current}/${quest.target}`;
-            dailyHtml += `<div>${quest.name}: ${status} | +${quest.reward}⭐</div>`;
-        }
-        dailyHtml += '</div>';
-        
-        let weeklyHtml = '<div class="pet-stats"><strong>📆 Еженедельные квесты</strong><br>';
-        for(let q in weeklyQuests) {
-            let quest = weeklyQuests[q];
-            let status = quest.completed ? '✅' : `${quest.current}/${quest.target}`;
-            weeklyHtml += `<div>${quest.name}: ${status} | +${quest.reward}⭐</div>`;
-        }
-        weeklyHtml += '</div>';
-        
-        document.getElementById('dailyQuests').innerHTML = dailyHtml;
-        document.getElementById('weeklyQuests').innerHTML = weeklyHtml;
-        
-        for(let q in dailyQuests) {
-            let quest = dailyQuests[q];
-            if(quest.current >= quest.target && !quest.completed) {
-                quest.completed = true;
-                coins += quest.reward;
-                showNotification(`✅ Квест выполнен! +${quest.reward}⭐`);
-                updateUI();
-            }
-        }
-        for(let q in weeklyQuests) {
-            let quest = weeklyQuests[q];
-            if(quest.current >= quest.target && !quest.completed) {
-                quest.completed = true;
-                coins += quest.reward;
-                showNotification(`✅ Еженедельный квест! +${quest.reward}⭐`);
-                updateUI();
+                document.getElementById('portalProgress').style.color = "#88ffaa";
             }
         }
         
-        let now = Date.now();
-        if(now - lastQuestReset > 86400000) {
-            lastQuestReset = now;
-            for(let q in dailyQuests) {
-                dailyQuests[q].current = 0;
-                dailyQuests[q].completed = false;
+        function activatePortal() {
+            if(!portalActive) return;
+            if(currentWorld === "forest") {
+                currentWorld = "desert";
+                addMsg(`🌍 ПЕРСОНАЖ ПЕРЕШЁЛ В МИР: ${WORLDS.desert.name}! Сложность увеличена!`);
+                mobsKilledInWorld = 0;
+                portalActive = false;
+                mobs = [];
+                for(let i=0;i<15;i++) spawnMob();
+                saveGame();
+                updatePortalStatus();
+            } else if(currentWorld === "desert") {
+                currentWorld = "castle";
+                addMsg(`🌍 ПЕРСОНАЖ ПЕРЕШЁЛ В МИР: ${WORLDS.castle.name}! Максимальная сложность!`);
+                mobsKilledInWorld = 0;
+                portalActive = false;
+                mobs = [];
+                for(let i=0;i<18;i++) spawnMob();
+                saveGame();
+                updatePortalStatus();
             }
         }
-    }
-    
-    function updateAchievementsUI() {
-        let list = [];
-        if(achievements.feedCount >= 10) list.push('🏆 "Заботливый" - 10 кормлений');
-        if(achievements.feedCount >= 50) list.push('🏆 "Повар" - 50 кормлений');
-        if(achievements.playCount >= 10) list.push('🏆 "Игроман" - 10 игр');
-        if(achievements.petCount >= 20) list.push('🏆 "Нежный" - 20 поглаживаний');
-        if(achievements.gamesPlayed >= 20) list.push('🏆 "Мастер игр" - 20 мини-игр');
-        if(level >= 5) list.push('🏆 "Ветеран" - 5 уровень');
-        if(level >= 10) list.push('🏆 "Легенда" - 10 уровень');
-        if(coins >= 500) list.push('🏆 "Миллионер" - 500⭐');
-        if(hasPet) list.push('🏆 "Друг животных" - есть питомец');
-        if(achievements.cooks >= 10) list.push('🏆 "Шеф-повар" - 10 блюд');
-        let ownedCount = Object.values(ownedOutfits).filter(v => v === true).length;
-        if(ownedCount >= 5) list.push(`🏆 "Модник" - ${ownedCount} украшений`);
-        if(ownedCount >= 10) list.push(`🏆 "Коллекционер" - ${ownedCount} украшений`);
-        if(list.length === 0) list.push('🎯 Выполняй действия для получения достижений!');
-        document.getElementById('achievementsList').innerHTML = list.map(a => `<div class="achievement-badge">${a}</div>`).join('');
-    }
-    
-    function dailyBonus() {
-        let now = Date.now();
-        let oneDay = 24 * 60 * 60 * 1000;
-        if(now - lastDaily > oneDay) {
-            let bonus = 50 + level * 10;
-            coins += bonus;
-            lastDaily = now;
-            showNotification(`🎁 Бонус: ${bonus}⭐ +5💎!`);
-            crystals += 5;
-            updateUI();
-        } else {
-            let hoursLeft = Math.ceil((oneDay - (now - lastDaily)) / (60 * 60 * 1000));
-            showNotification(`Бонус через ${hoursLeft} ч`, true);
+        
+        function showNicknameModal() {
+            return new Promise((resolve) => {
+                const modal = document.createElement('div');
+                modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:200;display:flex;align-items:center;justify-content:center;';
+                modal.innerHTML = `
+                    <div style="background:#2a2e3f;padding:30px;border-radius:20px;text-align:center;border:2px solid #ffaa55;max-width:90%;width:320px;">
+                        <h2 style="color:#ffcc88;margin-bottom:20px;">⚔️ Введите имя ⚔️</h2>
+                        <input type="text" id="nicknameInput" placeholder="Ваш никнейм" maxlength="20" style="width:100%;padding:12px;font-size:18px;background:#1a1e2a;border:1px solid #ffaa55;color:#ffcc88;border-radius:10px;margin-bottom:20px;font-family:monospace;text-align:center;">
+                        <button id="startBtn" style="background:#ffaa55;color:#1a1e2a;border:none;padding:10px 20px;font-size:18px;font-weight:bold;border-radius:10px;cursor:pointer;">Начать игру</button>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                const input = modal.querySelector('#nicknameInput');
+                const btn = modal.querySelector('#startBtn');
+                const start = () => { let nick = input.value.trim(); if(nick === "") nick = "Герой_" + Math.floor(Math.random() * 1000); modal.remove(); resolve(nick); };
+                btn.onclick = start;
+                input.onkeypress = (e) => { if(e.key === 'Enter') start(); };
+                input.focus();
+            });
         }
-    }
-    
-    function saveGame() {
-        let saveData = { 
-            hunger, happiness, energy, cleanliness, coins, crystals, level, exp, 
-            hasPet, currentRoom, lastDaily, lastQuestReset, 
-            achievements, skills, dailyQuests, weeklyQuests,
-            ownedOutfits, activeOutfits
-        };
-        localStorage.setItem('artemSave', JSON.stringify(saveData));
-        showNotification('💾 Сохранено! Все украшения сохранены!');
-    }
-    
-    function loadGame() {
-        let save = localStorage.getItem('artemSave');
-        if(save) {
-            let data = JSON.parse(save);
-            hunger = data.hunger || 100; happiness = data.happiness || 100; energy = data.energy || 100; cleanliness = data.cleanliness || 100;
-            coins = data.coins || 500; crystals = data.crystals || 0; level = data.level || 1; exp = data.exp || 0;
-            hasPet = data.hasPet || null; currentRoom = data.currentRoom || 'default';
-            lastDaily = data.lastDaily || Date.now(); lastQuestReset = data.lastQuestReset || Date.now();
-            if(data.achievements) achievements = data.achievements;
-            if(data.skills) skills = data.skills;
-            if(data.dailyQuests) dailyQuests = data.dailyQuests;
-            if(data.weeklyQuests) weeklyQuests = data.weeklyQuests;
-            if(data.ownedOutfits) ownedOutfits = data.ownedOutfits;
-            if(data.activeOutfits) activeOutfits = data.activeOutfits;
-            
-            if(hasPet) document.getElementById('petDisplay').innerHTML = `🐾 Твой питомец: ${petBonuses[hasPet].name} ${petBonuses[hasPet].bonus}`;
-            updateCharacterAppearance();
-            updateUI();
-            showNotification('💾 Игра загружена! Все украшения сохранены!');
-        }
-    }
-    
-    function resetSkills() {
-        if(coins >= 100) {
-            coins -= 100;
-            for(let s in skills) skills[s].level = 1;
-            updateUI();
-            showNotification('🔄 Навыки сброшены!');
-        } else showNotification('Нужно 100⭐!', true);
-    }
-    
-    function setupOutfitsGrid() {
-        let categories = {
-            "Головные уборы": ["hat", "topHat", "crown"],
-            "Лицо": ["glasses", "mask"],
-            "Шея": ["scarf", "necklace"],
-            "Спина": ["cape", "wings"],
-            "Волосы": ["bow", "flower"],
-            "Голова": ["halo", "devil", "pirate", "ninja"],
-            "Уши/Руки": ["earrings", "bracelet"]
+        
+        // ========== СТАТИСТИКА (исправленная) ==========
+        let stats = {
+            mobsKilled: 0,
+            totalGold: 0,
+            totalDamage: 0,
+            totalDamageTaken: 0,
+            startTime: Date.now()
         };
         
-        let html = '';
+        function getPlayTime() {
+            let s = Math.floor((Date.now() - stats.startTime) / 1000);
+            return { h: Math.floor(s/3600), m: Math.floor((s%3600)/60), s: s%60 };
+        }
         
-        let isClassicActive = !Object.values(activeOutfits).some(v => v === true);
-        html += `<div class="feature-card ${isClassicActive ? 'active-outfit' : ''}" onclick="buyOutfit('classic')">
-            <div class="feature-icon">👕</div>
-            <div class="feature-title">Классика</div>
-            <div class="feature-cost">Снять всё</div>
-        </div>`;
+        // ========== БЕЗОПАСНАЯ ЗОНА ==========
+        let safeZone = { x: 500, y: 420, width: 560, height: 440 };
+        let shopNPC = { x: safeZone.x + safeZone.width - 80, y: safeZone.y + safeZone.height - 60, radius: 28 };
         
-        for (let category in categories) {
-            html += `<div style="grid-column: span 4; font-size:0.7rem; font-weight:bold; color:#ff8c33; margin-top:5px;">${category}</div>`;
-            for (let key of categories[category]) {
-                let outfit = outfitsData[key];
-                if (outfit) {
-                    let isOwned = ownedOutfits[key];
-                    let isActive = activeOutfits[key];
-                    let statusClass = '';
-                    let statusText = '';
-                    
-                    if (isOwned) {
-                        statusClass = 'owned-outfit';
-                        if (isActive) {
-                            statusClass = 'active-outfit';
-                            statusText = ' (надето)';
-                        } else {
-                            statusText = ' (в инвентаре)';
-                        }
-                    } else {
-                        statusText = ` ${outfit.price}⭐`;
-                    }
-                    
-                    html += `<div class="feature-card ${statusClass}" onclick="buyOutfit('${key}')">
-                        <div class="feature-icon">${outfit.icon}</div>
-                        <div class="feature-title">${outfit.name}${statusText}</div>
-                        <div class="feature-cost">${isOwned ? (isActive ? '✓ Надето' : 'В инвентаре') : outfit.price + '⭐'}</div>
-                    </div>`;
+        let gates = [
+            { x: safeZone.x + safeZone.width/2 - 50, y: safeZone.y - 30, width: 100, height: 40 },
+            { x: safeZone.x + safeZone.width/2 - 50, y: safeZone.y + safeZone.height - 10, width: 100, height: 40 },
+            { x: safeZone.x - 30, y: safeZone.y + safeZone.height/2 - 50, width: 40, height: 100 },
+            { x: safeZone.x + safeZone.width - 10, y: safeZone.y + safeZone.height/2 - 50, width: 40, height: 100 }
+        ];
+        
+        function isInSafeZone(x, y) { return x > safeZone.x && x < safeZone.x + safeZone.width && y > safeZone.y && y < safeZone.y + safeZone.height; }
+        function isAtGate(x, y) { for(let g of gates) if(x > g.x && x < g.x+g.width && y > g.y && y < g.y+g.height) return true; return false; }
+        function canCrossBoundary(fx, fy, tx, ty) {
+            let was = isInSafeZone(fx, fy);
+            let will = isInSafeZone(tx, ty);
+            if(was === will) return true;
+            let mx = (fx+tx)/2, my = (fy+ty)/2;
+            return isAtGate(mx, my) || isAtGate(tx, ty) || isAtGate(fx, fy);
+        }
+        
+        let obstacles = [];
+        
+        function generateWorld() {
+            obstacles = [];
+            for(let i=0;i<MAP_H;i++) for(let j=0;j<MAP_W;j++) worldMap[i][j] = 0;
+            for(let y=12;y<24;y++) for(let x=14;x<30;x++) worldMap[y][x] = 1;
+            for(let x=19;x<25;x++) { worldMap[11][x] = 2; worldMap[24][x] = 2; }
+            for(let y=16;y<22;y++) { worldMap[y][13] = 2; worldMap[y][30] = 2; }
+            for(let i=0;i<38;i++) {
+                let fx = safeZone.x + i*28, fxTile = Math.floor(fx / TILE_SIZE), fyTile = Math.floor(safeZone.y / TILE_SIZE);
+                if(!(fx>gates[0].x-20 && fx<gates[0].x+gates[0].width+20)) { obstacles.push({x:fx,y:safeZone.y-18,radius:14,type:'fence'}); if(fxTile >=0 && fxTile < MAP_W && fyTile-1 >=0) worldMap[fyTile-1][fxTile] = 3; }
+                if(!(fx>gates[1].x-20 && fx<gates[1].x+gates[1].width+20)) { obstacles.push({x:fx,y:safeZone.y+safeZone.height+8,radius:14,type:'fence'}); if(fxTile >=0 && fxTile < MAP_W && fyTile+24 < MAP_H) worldMap[fyTile+24][fxTile] = 3; }
+            }
+            for(let i=0;i<30;i++) {
+                let fy = safeZone.y + i*28, fxTile = Math.floor(safeZone.x / TILE_SIZE), fyTile = Math.floor(fy / TILE_SIZE);
+                if(!(fy>gates[2].y-20 && fy<gates[2].y+gates[2].height+20)) { obstacles.push({x:safeZone.x-18,y:fy,radius:14,type:'fence'}); if(fyTile >=0 && fyTile < MAP_H && fxTile-1 >=0) worldMap[fyTile][fxTile-1] = 3; }
+                if(!(fy>gates[3].y-20 && fy<gates[3].y+gates[3].height+20)) { obstacles.push({x:safeZone.x+safeZone.width+8,y:fy,radius:14,type:'fence'}); if(fyTile >=0 && fyTile < MAP_H && fxTile+29 < MAP_W) worldMap[fyTile][fxTile+29] = 3; }
+            }
+            for(let i=0;i<420;i++) {
+                let x=80+Math.random()*(WORLD_WIDTH-160), y=80+Math.random()*(WORLD_HEIGHT-160);
+                if(x>safeZone.x-80 && x<safeZone.x+safeZone.width+80 && y>safeZone.y-80 && y<safeZone.y+safeZone.height+80) continue;
+                obstacles.push({x,y,radius:26,type:'tree'});
+                let tx = Math.floor(x/TILE_SIZE), ty = Math.floor(y/TILE_SIZE);
+                if(tx>=0 && tx<MAP_W && ty>=0 && ty<MAP_H && worldMap[ty][tx]===0) worldMap[ty][tx] = 3;
+            }
+            for(let i=0;i<85;i++) {
+                let x=100+Math.random()*(WORLD_WIDTH-200), y=100+Math.random()*(WORLD_HEIGHT-200);
+                if(x>safeZone.x-100 && x<safeZone.x+safeZone.width+100 && y>safeZone.y-100 && y<safeZone.y+safeZone.height+100) continue;
+                obstacles.push({x,y,radius:38,type:'mountain'});
+                let tx = Math.floor(x/TILE_SIZE), ty = Math.floor(y/TILE_SIZE);
+                if(tx>=0 && tx<MAP_W && ty>=0 && ty<MAP_H && worldMap[ty][tx]===0) worldMap[ty][tx] = 4;
+            }
+            for(let i=0;i<260;i++) {
+                let x=50+Math.random()*(WORLD_WIDTH-100), y=50+Math.random()*(WORLD_HEIGHT-100);
+                if(x>safeZone.x-60 && x<safeZone.x+safeZone.width+60 && y>safeZone.y-60 && y<safeZone.y+safeZone.height+60) continue;
+                obstacles.push({x,y,radius:16,type:'rock'});
+                let tx = Math.floor(x/TILE_SIZE), ty = Math.floor(y/TILE_SIZE);
+                if(tx>=0 && tx<MAP_W && ty>=0 && ty<MAP_H && worldMap[ty][tx]===0) worldMap[ty][tx] = 6;
+            }
+        }
+        
+        function isWalkable(x,y,r=24) {
+            if(x-r<25 || x+r>WORLD_WIDTH-25 || y-r<25 || y+r>WORLD_HEIGHT-25) return false;
+            for(let o of obstacles) if(Math.hypot(x-o.x,y-o.y)<r+o.radius) return false;
+            return true;
+        }
+        
+        function canMoveTo(x,y,r=24) {
+            if(!isWalkable(x,y,r)) return false;
+            if(!canCrossBoundary(player.x,player.y,x,y)) return false;
+            return true;
+        }
+        
+        // ========== КЛАССЫ ==========
+        const CLASSES = {
+            warrior: { name: "Мечник", icon: "⚔️", color: "#5a7a9a", armorColor: "#4a6a8a", hp: 320, mp: 75, dmgMin: 34, dmgMax: 60, skill: "Вихрь", range: 60, skillRange: 75, isMelee: true, skinColor: "#e0c8a0", hairColor: "#8b5a2b" },
+            archer: { name: "Лучник", icon: "🏹", color: "#6a8a5a", armorColor: "#5a7a4a", hp: 260, mp: 120, dmgMin: 32, dmgMax: 58, skill: "Тройной выстрел", range: 180, skillRange: 210, isMelee: false, skinColor: "#e0c8a0", hairColor: "#6b4a2a" },
+            mage: { name: "Маг", icon: "🔮", color: "#9a6aba", armorColor: "#8a5aaa", hp: 210, mp: 210, dmgMin: 40, dmgMax: 70, skill: "Огненный взрыв", range: 170, skillRange: 200, isMelee: false, skinColor: "#e0c8a0", hairColor: "#4a2a6a" }
+        };
+        
+        // МОБЫ
+        const MOB_TYPES = [
+            { name: "Гоблин", hp: 70, dmg: 16, exp: 38, color: "#6f8c5a", skin: "#8cae6a", icon: "👺", speed: 1.0, range: 55, draw: function(x,y) { ctx.fillStyle=this.skin; ctx.fillRect(x-12,y-18,24,32); ctx.fillStyle=this.color; ctx.fillRect(x-10,y-10,20,24); ctx.fillStyle="#000"; ctx.fillRect(x-6,y-12,4,4); ctx.fillRect(x+2,y-12,4,4); ctx.fillStyle="#8b5a2b"; ctx.fillRect(x-8,y+4,16,8); } },
+            { name: "Волк", hp: 95, dmg: 24, exp: 55, color: "#8a7a6a", skin: "#c0a890", icon: "🐺", speed: 1.3, range: 50, draw: function(x,y) { ctx.fillStyle=this.skin; ctx.fillRect(x-14,y-16,28,28); ctx.fillStyle=this.color; ctx.fillRect(x-12,y-12,24,22); ctx.fillStyle="#000"; ctx.fillRect(x-8,y-10,4,4); ctx.fillRect(x+4,y-10,4,4); ctx.fillStyle="#4a3a2a"; ctx.fillRect(x-4,y+2,8,6); } },
+            { name: "Медведь", hp: 150, dmg: 32, exp: 78, color: "#8b5a3a", skin: "#b87a4a", icon: "🐻", speed: 0.9, range: 58, draw: function(x,y) { ctx.fillStyle=this.skin; ctx.fillRect(x-16,y-20,32,36); ctx.fillStyle=this.color; ctx.fillRect(x-14,y-12,28,28); ctx.fillStyle="#000"; ctx.fillRect(x-8,y-14,5,5); ctx.fillRect(x+3,y-14,5,5); ctx.fillStyle="#5a3a2a"; ctx.fillRect(x-6,y+2,12,8); } },
+            { name: "Скелет", hp: 170, dmg: 32, exp: 95, color: "#b8b8cc", skin: "#d0d0e0", icon: "💀", speed: 1.1, range: 55, draw: function(x,y) { ctx.fillStyle=this.skin; ctx.fillRect(x-12,y-20,24,36); ctx.fillStyle=this.color; ctx.fillRect(x-10,y-12,20,28); ctx.fillStyle="#000"; ctx.fillRect(x-6,y-14,4,4); ctx.fillRect(x+2,y-14,4,4); ctx.fillStyle="#8a8a8a"; ctx.fillRect(x-8,y+2,16,6); } },
+            { name: "Орк", hp: 240, dmg: 45, exp: 132, color: "#8a6a4a", skin: "#aa8262", icon: "👺", speed: 0.85, range: 58, draw: function(x,y) { ctx.fillStyle=this.skin; ctx.fillRect(x-14,y-20,28,36); ctx.fillStyle=this.color; ctx.fillRect(x-12,y-12,24,28); ctx.fillStyle="#000"; ctx.fillRect(x-8,y-14,5,5); ctx.fillRect(x+3,y-14,5,5); ctx.fillStyle="#b87c3a"; ctx.fillRect(x-10,y+2,20,10); } },
+            { name: "Дракон", hp: 310, dmg: 58, exp: 210, color: "#c97a3a", skin: "#e09a5a", icon: "🐉", speed: 0.6, range: 65, draw: function(x,y) { ctx.fillStyle=this.skin; ctx.fillRect(x-16,y-22,32,40); ctx.fillStyle=this.color; ctx.fillRect(x-14,y-14,28,32); ctx.fillStyle="#000"; ctx.fillRect(x-8,y-16,5,5); ctx.fillRect(x+3,y-16,5,5); ctx.fillStyle="#d97a3a"; ctx.fillRect(x-12,y-2,24,8); } }
+        ];
+        
+        let mobs = [], spawnTimer = 0;
+        const MAX_MOBS = 40;
+        
+        function createMob() {
+            let t = MOB_TYPES[Math.floor(Math.random() * MOB_TYPES.length)];
+            let lvl = Math.max(1, player.level + Math.floor(Math.random() * 4) - 2);
+            let worldMult = WORLDS[currentWorld].mobMultiplier;
+            let hpMult = 1 + (lvl-1)*0.15, dmgMult = 1 + (lvl-1)*0.13;
+            return {
+                name: t.name + " Lv." + lvl, level: lvl,
+                hp: Math.floor(t.hp * hpMult * worldMult), maxHp: Math.floor(t.hp * hpMult * worldMult),
+                dmg: Math.floor(t.dmg * dmgMult * (1 + (worldMult-1)*0.3)),
+                exp: Math.floor(t.exp * (0.85 + lvl*0.12) * worldMult),
+                color: WORLDS[currentWorld].mobColors[Math.floor(Math.random() * WORLDS[currentWorld].mobColors.length)],
+                skin: t.skin, icon: t.icon, speed: t.speed, attackRange: t.range, drawFunc: t.draw,
+                x: 0, y: 0, attackTimer: 0
+            };
+        }
+        
+        function spawnMob() {
+            if(mobs.length >= MAX_MOBS) return;
+            for(let a=0;a<50;a++) {
+                let x=150+Math.random()*(WORLD_WIDTH-300), y=120+Math.random()*(WORLD_HEIGHT-240);
+                if(isWalkable(x,y,26) && !isInSafeZone(x,y) && Math.hypot(x-player.x,y-player.y)>200) {
+                    let m=createMob(); m.x=x; m.y=y; mobs.push(m); return;
                 }
             }
         }
-        document.getElementById('outfitsGrid').innerHTML = html;
-    }
-    
-    // Назначение обработчиков
-    document.getElementById('feedBtn').onclick = feed;
-    document.getElementById('playBtn').onclick = play;
-    document.getElementById('sleepBtn').onclick = sleep;
-    document.getElementById('cleanBtn').onclick = clean;
-    document.getElementById('petBtn').onclick = pet;
-    document.getElementById('danceBtn').onclick = dance;
-    document.getElementById('readBtn').onclick = read;
-    document.getElementById('cookBtn').onclick = cook;
-    document.getElementById('dailyBonus').onclick = dailyBonus;
-    document.getElementById('saveBtn').onclick = saveGame;
-    document.getElementById('resetSkillsBtn').onclick = resetSkills;
-    document.getElementById('resetOutfitBtn').onclick = resetAllOutfits;
-    
-    document.getElementById('characterArea').onclick = (e) => {
-        let phrases = ["Привет, друг! 😊", "Ты лучший!", "Я тебя люблю! ❤️", "Как настроение?", "Давай дружить!"];
-        showSpeech(phrases[Math.floor(Math.random() * phrases.length)]);
-        happiness = Math.min(100, happiness + 2);
-        createParticles(e.clientX, e.clientY, ['❤️', '💕', '💗']);
-        updateUI();
-    };
-    
-    // Вкладки
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.onclick = () => {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            tab.classList.add('active');
-            document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
-            if (tab.dataset.tab === 'outfits') setupOutfitsGrid();
+        
+        let player = {
+            x: safeZone.x + safeZone.width/2, y: safeZone.y + safeZone.height/2,
+            targetX: null, targetY: null,
+            hp: 320, maxHp: 320, mp: 75, maxMp: 75,
+            level: 1, exp: 0, expToNext: 90,
+            classType: "warrior",
+            potionHp: 5, potionMp: 5, potionBigHp: 1, potionBigMp: 1,
+            armorId: "wooden", weaponId: "wooden_sword",
+            gold: 450, speed: 4.5, defense: 15,
+            attackTimer: 0, superCooldown: 0,
+            isMoving: false, dmgMin: 8, dmgMax: 14, attackRange: 55
         };
-    });
-    
-    // Игры
-    document.querySelectorAll('[data-game]').forEach(el => el.onclick = () => playGame(el.dataset.game));
-    document.querySelectorAll('[data-shop]').forEach(el => el.onclick = () => buyItem(el.dataset.shop));
-    document.querySelectorAll('[data-pet]').forEach(el => el.onclick = () => buyPet(el.dataset.pet));
-    document.querySelectorAll('[data-room]').forEach(el => el.onclick = () => changeRoom(el.dataset.room));
-    
-    // Ухудшение параметров
-    setInterval(() => {
-        hunger = Math.max(0, hunger - 2);
-        happiness = Math.max(0, happiness - 1);
-        energy = Math.max(0, energy - 2);
-        cleanliness = Math.max(0, cleanliness - 2);
-        updateUI();
-        if(hunger < 20) showSpeech("Я голоден! 🍕");
-        else if(energy < 20) showSpeech("Я устал... 😴");
-        else if(cleanliness < 20) showSpeech("Помой меня! 🧼");
-    }, 25000);
-    
-    setInterval(() => saveGame(), 30000);
-    
-    // Фоновые частицы
-    for(let i = 0; i < 50; i++) {
-        let p = document.createElement('div');
-        p.className = 'bg-particle';
-        p.innerHTML = ['⭐', '✨', '🌟', '💫', '❤️', '🎮', '🍕', '🐟'][Math.floor(Math.random() * 8)];
-        p.style.left = Math.random() * 100 + '%';
-        p.style.animationDuration = 12 + Math.random() * 20 + 's';
-        p.style.animationDelay = Math.random() * 20 + 's';
-        document.body.appendChild(p);
-    }
-    
-    setupOutfitsGrid();
-    loadGame();
-    updateUI();
-    showSpeech("✨ Добро пожаловать! Я Артем! Украшения сохраняются навсегда! ✨");
-    
-    window.upgradeSkill = upgradeSkill;
-    window.buyOutfit = buyOutfit;
+        
+        // ========== ДВИЖЕНИЕ ==========
+        function moveTo(x, y) { player.targetX = x; player.targetY = y; }
+        function updateMove() {
+            if(player.targetX === null || player.targetY === null) { player.isMoving = false; return; }
+            let dx = player.targetX - player.x, dy = player.targetY - player.y, dist = Math.hypot(dx, dy);
+            if(dist < 8) { player.targetX = null; player.targetY = null; player.isMoving = false; return; }
+            player.isMoving = true;
+            let step = Math.min(player.speed, dist), ang = Math.atan2(dy, dx);
+            let nx = player.x + Math.cos(ang) * step, ny = player.y + Math.sin(ang) * step;
+            if(canMoveTo(nx, ny, 24)) { player.x = nx; player.y = ny; }
+            else { player.targetX = null; player.targetY = null; player.isMoving = false; }
+        }
+        
+        // РЕАЛИСТИЧНАЯ МОДЕЛЬ ИГРОКА
+        function drawRealisticPlayer(x, y, isMoving) {
+            const c = CLASSES[player.classType];
+            if(isMoving) walkCycle = (walkCycle + 0.15) % (Math.PI * 2);
+            else walkCycle = walkCycle * 0.95;
+            const legOffset = Math.sin(walkCycle) * 6;
+            const armOffset = Math.sin(walkCycle + Math.PI) * 8;
+            ctx.fillStyle = "#2a2a2a";
+            ctx.beginPath(); ctx.moveTo(x-12, y+15); ctx.lineTo(x-16 + (legOffset * 0.5), y+28); ctx.lineTo(x-10, y+28); ctx.fill();
+            ctx.beginPath(); ctx.moveTo(x+12, y+15); ctx.lineTo(x+16 - (legOffset * 0.5), y+28); ctx.lineTo(x+10, y+28); ctx.fill();
+            ctx.fillStyle = "#4a3a2a"; ctx.fillRect(x-18 + (legOffset * 0.3), y+27, 12, 6); ctx.fillRect(x+6 - (legOffset * 0.3), y+27, 12, 6);
+            ctx.fillStyle = c.color;
+            ctx.beginPath(); ctx.moveTo(x-14, y+4); ctx.quadraticCurveTo(x, y+14, x+14, y+4); ctx.lineTo(x+12, y-2); ctx.quadraticCurveTo(x, y+2, x-12, y-2); ctx.fill();
+            ctx.fillStyle = c.armorColor; ctx.fillRect(x-10, y+2, 20, 12);
+            ctx.fillStyle = c.skinColor;
+            ctx.beginPath(); ctx.moveTo(x-12, y+2); ctx.quadraticCurveTo(x-18 + armOffset, y+6, x-14 + armOffset*0.7, y+12); ctx.lineTo(x-10, y+4); ctx.fill();
+            ctx.beginPath(); ctx.moveTo(x+12, y+2); ctx.quadraticCurveTo(x+18 - armOffset, y+6, x+14 - armOffset*0.7, y+12); ctx.lineTo(x+10, y+4); ctx.fill();
+            ctx.fillRect(x-16 + armOffset*0.6, y+10, 6, 5); ctx.fillRect(x+10 - armOffset*0.6, y+10, 6, 5);
+            ctx.fillStyle = c.skinColor; ctx.beginPath(); ctx.ellipse(x, y-8, 10, 12, 0, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = c.hairColor; ctx.beginPath(); ctx.ellipse(x-2, y-15, 8, 6, 0, 0, Math.PI*2); ctx.ellipse(x+2, y-15, 8, 6, 0, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(x-5, y-11, 2.5, 0, Math.PI*2); ctx.arc(x+5, y-11, 2.5, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = "#1a2a3a"; ctx.beginPath(); ctx.arc(x-5, y-11, 1.5, 0, Math.PI*2); ctx.arc(x+5, y-11, 1.5, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(x-5.8, y-12, 0.8, 0, Math.PI*2); ctx.arc(x+4.2, y-12, 0.8, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.strokeStyle = "#8b5a3a"; ctx.lineWidth = 2; ctx.arc(x, y-5, 5, 0.1, Math.PI - 0.1); ctx.stroke();
+            ctx.fillStyle = "#c99e6f"; ctx.beginPath(); ctx.moveTo(x-2, y-8); ctx.lineTo(x, y-6); ctx.lineTo(x+2, y-8); ctx.fill();
+            let weapon = getWeaponById(player.weaponId);
+            if(c.name === "Мечник" || (weapon && weapon.type === "melee")) {
+                ctx.fillStyle = "#ccaa88"; ctx.fillRect(x+12 - armOffset*0.3, y-2, 16, 6);
+                ctx.fillStyle = "#aa8866"; ctx.fillRect(x+24 - armOffset*0.5, y-4, 6, 12);
+            } else if(c.name === "Лучник" || (weapon && weapon.type === "ranged")) {
+                ctx.fillStyle = "#c4b27a"; ctx.beginPath(); ctx.moveTo(x+14 - armOffset*0.3, y-4); ctx.lineTo(x+28 - armOffset*0.5, y); ctx.lineTo(x+14 - armOffset*0.3, y+4); ctx.fill();
+                ctx.fillStyle = "#aa8866"; ctx.fillRect(x+24 - armOffset*0.5, y-2, 4, 8);
+            } else {
+                ctx.fillStyle = "#ffaa66"; ctx.beginPath(); ctx.ellipse(x+14 - armOffset*0.3, y, 8, 6, 0, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = "#ff8844"; ctx.beginPath(); ctx.ellipse(x+16 - armOffset*0.4, y, 4, 3, 0, 0, Math.PI*2); ctx.fill();
+                ctx.shadowBlur = 10; ctx.shadowColor = "#ffaa44";
+                ctx.fillStyle = "#ffaa44"; ctx.beginPath(); ctx.ellipse(x+14 - armOffset*0.3, y, 3, 2, 0, 0, Math.PI*2); ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+            ctx.fillStyle = "#8b5a2b"; ctx.fillRect(x-8, y+8, 16, 3);
+        }
+        
+        // ========== МАГАЗИН С ПРОКРУТКОЙ ==========
+        let shopOpen = false;
+        let shopScroll = 0;
+        let shopTab = "potions";
+        let shopItemsPerPage = 5;
+        let shopTouchStart = null;
+        
+        function drawShop() {
+            let w = 500, h = 500;
+            let x = canvasWidth/2 - w/2, y = canvasHeight/2 - h/2;
+            ctx.fillStyle = "#1a1e2add"; ctx.fillRect(x, y, w, h);
+            ctx.strokeStyle = "#ffaa55"; ctx.lineWidth = 3; ctx.strokeRect(x, y, w, h);
+            ctx.fillStyle = "#ffcc88"; ctx.font = "bold 20px monospace"; ctx.fillText("🏪 МАГАЗИН", x+20, y+35);
+            ctx.fillStyle = "#ffaa55"; ctx.fillRect(x+w-40, y+15, 30, 30);
+            ctx.fillStyle = "#ffcc88"; ctx.font = "24px monospace"; ctx.fillText("✕", x+w-32, y+40);
+            ctx.fillStyle = "#aa8866"; ctx.fillRect(x+20, y+55, 460, 3);
+            
+            let tabW = 100, tabH = 30;
+            ctx.fillStyle = shopTab === "potions" ? "#ffaa55" : "#2a2e3f";
+            ctx.fillRect(x+20, y+65, tabW, tabH);
+            ctx.fillStyle = shopTab === "armor" ? "#ffaa55" : "#2a2e3f";
+            ctx.fillRect(x+130, y+65, tabW, tabH);
+            ctx.fillStyle = shopTab === "weapons" ? "#ffaa55" : "#2a2e3f";
+            ctx.fillRect(x+240, y+65, tabW, tabH);
+            ctx.fillStyle = "#ffcc88"; ctx.font = "14px monospace";
+            ctx.fillText("Зелья", x+50, y+88);
+            ctx.fillText("Броня", x+160, y+88);
+            ctx.fillText("Оружие", x+270, y+88);
+            
+            let items = [];
+            if(shopTab === "potions") {
+                items = [
+                    { name: "Зелье HP", type: "hp", price: 60, icon: "❤️", desc: "Восстанавливает 70% HP" },
+                    { name: "Зелье MP", type: "mp", price: 55, icon: "💙", desc: "Восстанавливает 75% MP" },
+                    { name: "Большое HP", type: "hp_big", price: 160, icon: "❤️✨", desc: "Восстанавливает 90% HP" },
+                    { name: "Большое MP", type: "mp_big", price: 150, icon: "💙✨", desc: "Восстанавливает 100% MP" }
+                ];
+            } else if(shopTab === "armor") {
+                items = ALL_ARMOR.filter(a => a.level <= player.level + 10);
+            } else {
+                items = ALL_WEAPONS.filter(w => w.level <= player.level + 10);
+            }
+            
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(x+10, y+100, w-20, h-130);
+            ctx.clip();
+            
+            let startIdx = Math.floor(shopScroll / shopItemsPerPage) * shopItemsPerPage;
+            let endIdx = Math.min(startIdx + shopItemsPerPage, items.length);
+            let itemY = y + 110;
+            for(let i = startIdx; i < endIdx; i++) {
+                let it = items[i];
+                let itemX = x + 20;
+                let itemH = 70;
+                ctx.fillStyle = "#2a2e4a"; ctx.fillRect(itemX, itemY, w-40, itemH-5);
+                ctx.fillStyle = "#ffcc88"; ctx.font = "18px monospace"; ctx.fillText(it.icon, itemX+10, itemY+28);
+                ctx.fillStyle = "#ffffaa"; ctx.font = "12px monospace"; ctx.fillText(it.name, itemX+40, itemY+22);
+                if(it.desc) { ctx.fillStyle = "#aa8866"; ctx.font = "9px monospace"; ctx.fillText(it.desc, itemX+40, itemY+42); }
+                if(it.def) ctx.fillText(`Защита: +${it.def} | Ур.${it.level}`, itemX+40, itemY+58);
+                if(it.dmgMin) ctx.fillText(`Урон: ${it.dmgMin}-${it.dmgMax} | Ур.${it.level}`, itemX+40, itemY+58);
+                ctx.fillStyle = "#88ffaa"; ctx.font = "bold 12px monospace"; ctx.fillText(`${it.price}💰`, itemX + w-80, itemY+28);
+                ctx.fillStyle = "#ffaa55"; ctx.fillRect(itemX + w-100, itemY+35, 60, 25);
+                ctx.fillStyle = "#000"; ctx.font = "10px monospace"; ctx.fillText("КУПИТЬ", itemX + w-90, itemY+53);
+                itemY += itemH;
+            }
+            ctx.restore();
+            
+            if(items.length > shopItemsPerPage) {
+                let scrollBarX = x + w - 20;
+                let scrollBarH = h - 120;
+                let scrollBarY = y + 70;
+                let maxScroll = Math.max(0, items.length - shopItemsPerPage);
+                let scrollPercent = shopScroll / maxScroll;
+                let thumbH = Math.max(40, scrollBarH * (shopItemsPerPage / items.length));
+                let thumbY = scrollBarY + scrollPercent * (scrollBarH - thumbH);
+                ctx.fillStyle = "#4a4e6a"; ctx.fillRect(scrollBarX, scrollBarY, 10, scrollBarH);
+                ctx.fillStyle = "#ffaa55"; ctx.fillRect(scrollBarX, thumbY, 10, thumbH);
+            }
+        }
+        
+        function handleShopClick(mx, my) {
+            let w = 500, h = 500;
+            let x = canvasWidth/2 - w/2, y = canvasHeight/2 - h/2;
+            if(mx > x+w-40 && mx < x+w-10 && my > y+15 && my < y+45) { shopOpen = false; return true; }
+            if(mx > x+20 && mx < x+120 && my > y+65 && my < y+95) { shopTab = "potions"; shopScroll = 0; return true; }
+            if(mx > x+130 && mx < x+230 && my > y+65 && my < y+95) { shopTab = "armor"; shopScroll = 0; return true; }
+            if(mx > x+240 && mx < x+340 && my > y+65 && my < y+95) { shopTab = "weapons"; shopScroll = 0; return true; }
+            
+            let items = [];
+            if(shopTab === "potions") {
+                items = [
+                    { name: "Зелье HP", type: "hp", price: 60, icon: "❤️" },
+                    { name: "Зелье MP", type: "mp", price: 55, icon: "💙" },
+                    { name: "Большое HP", type: "hp_big", price: 160, icon: "❤️✨" },
+                    { name: "Большое MP", type: "mp_big", price: 150, icon: "💙✨" }
+                ];
+            } else if(shopTab === "armor") {
+                items = ALL_ARMOR.filter(a => a.level <= player.level + 10);
+            } else {
+                items = ALL_WEAPONS.filter(w => w.level <= player.level + 10);
+            }
+            
+            let startIdx = Math.floor(shopScroll / shopItemsPerPage) * shopItemsPerPage;
+            let endIdx = Math.min(startIdx + shopItemsPerPage, items.length);
+            let itemY = y + 110;
+            for(let i = startIdx; i < endIdx; i++) {
+                let it = items[i];
+                let itemX = x + 20;
+                let itemH = 70;
+                if(my > itemY && my < itemY + itemH-5) {
+                    let buyX = itemX + w-100;
+                    if(mx > buyX && mx < buyX + 60 && my > itemY+35 && my < itemY+60) {
+                        if(player.gold >= it.price) {
+                            player.gold -= it.price;
+                            if(it.type === "hp") player.potionHp++;
+                            else if(it.type === "mp") player.potionMp++;
+                            else if(it.type === "hp_big") player.potionBigHp++;
+                            else if(it.type === "mp_big") player.potionBigMp++;
+                            else if(it.def) { player.armorId = it.id; updateStatsFromLevel(); addMsg(`🛡️ Куплена ${it.name}!`); }
+                            else if(it.dmgMin) { player.weaponId = it.id; updateStatsFromLevel(); addMsg(`⚔️ Куплено ${it.name}!`); }
+                            addMsg(`✅ Куплен ${it.name}!`);
+                            saveGame();
+                        } else addMsg(`💰 Не хватает золота!`, true);
+                        return true;
+                    }
+                }
+                itemY += itemH;
+            }
+            return false;
+        }
+        
+        function handleShopTouch(e) {
+            let rect = canvas.getBoundingClientRect();
+            let touch = e.touches[0];
+            let x = (touch.clientX - rect.left) * (canvasWidth/rect.width);
+            let y = (touch.clientY - rect.top) * (canvasHeight/rect.height);
+            let w = 500, h = 500;
+            let shopX = canvasWidth/2 - w/2, shopY = canvasHeight/2 - h/2;
+            let items = [];
+            if(shopTab === "potions") items = [
+                { name: "Зелье HP", type: "hp", price: 60 },
+                { name: "Зелье MP", type: "mp", price: 55 },
+                { name: "Большое HP", type: "hp_big", price: 160 },
+                { name: "Большое MP", type: "mp_big", price: 150 }
+            ];
+            else if(shopTab === "armor") items = ALL_ARMOR.filter(a => a.level <= player.level + 10);
+            else items = ALL_WEAPONS.filter(w => w.level <= player.level + 10);
+            
+            let maxScroll = Math.max(0, items.length - shopItemsPerPage);
+            let scrollBarX = shopX + w - 20;
+            let scrollBarY = shopY + 70;
+            let scrollBarH = h - 120;
+            if(x > scrollBarX && x < scrollBarX + 10 && y > scrollBarY && y < scrollBarY + scrollBarH) {
+                let percent = (y - scrollBarY) / scrollBarH;
+                shopScroll = Math.min(maxScroll, Math.max(0, percent * maxScroll));
+                e.preventDefault();
+                return true;
+            }
+            return false;
+        }
+        
+        // ========== ИНВЕНТАРЬ ==========
+        let showInventory = false;
+        let invScroll = 0;
+        let invItemsPerPage = 6;
+        
+        function drawInventory() {
+            let w = 450, h = 500;
+            let x = canvasWidth/2 - w/2, y = canvasHeight/2 - h/2;
+            ctx.fillStyle = "#1a1e2add"; ctx.fillRect(x, y, w, h);
+            ctx.strokeStyle = "#ffaa55"; ctx.lineWidth = 3; ctx.strokeRect(x, y, w, h);
+            ctx.fillStyle = "#ffcc88"; ctx.font = "bold 20px monospace"; ctx.fillText("🎒 ИНВЕНТАРЬ", x+20, y+35);
+            ctx.fillStyle = "#ffaa55"; ctx.fillRect(x+w-40, y+15, 30, 30);
+            ctx.fillStyle = "#ffcc88"; ctx.font = "24px monospace"; ctx.fillText("✕", x+w-32, y+40);
+            ctx.fillStyle = "#aa8866"; ctx.fillRect(x+20, y+55, w-40, 3);
+            
+            ctx.fillStyle = "#ffaa88"; ctx.font = "bold 14px monospace"; ctx.fillText("ЗЕЛЬЯ", x+20, y+90);
+            ctx.fillStyle = "#edbc"; ctx.font = "12px monospace";
+            ctx.fillText(`🧪 Малые зелья HP: ${player.potionHp}`, x+30, y+115);
+            ctx.fillText(`💙 Малые зелья MP: ${player.potionMp}`, x+30, y+140);
+            ctx.fillText(`✨ Большие зелья HP: ${player.potionBigHp}`, x+30, y+165);
+            ctx.fillText(`✨ Большие зелья MP: ${player.potionBigMp}`, x+30, y+190);
+            
+            ctx.fillStyle = "#ffaa88"; ctx.font = "bold 14px monospace"; ctx.fillText("ЭКИПИРОВКА", x+20, y+225);
+            let armor = getArmorById(player.armorId);
+            let weapon = getWeaponById(player.weaponId);
+            ctx.fillStyle = "#edbc"; ctx.font = "12px monospace";
+            ctx.fillText(`🛡️ Броня: ${armor ? armor.name : "Нет"} (Ур.${armor ? armor.level : 0}) +${armor ? armor.def : 0}`, x+30, y+255);
+            ctx.fillText(`⚔️ Оружие: ${weapon ? weapon.name : "Нет"} (Ур.${weapon ? weapon.level : 0}) ${weapon ? weapon.dmgMin+"-"+weapon.dmgMax : ""}`, x+30, y+285);
+            
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(x+10, y+310, w-20, h-350);
+            ctx.clip();
+            
+            let availableArmor = ALL_ARMOR.filter(a => a.level <= player.level);
+            let availableWeapons = ALL_WEAPONS.filter(w => w.level <= player.level);
+            let allItems = [...availableArmor.map(a => ({...a, type: "armor"})), ...availableWeapons.map(w => ({...w, type: "weapon"}))];
+            let startIdx = Math.floor(invScroll / invItemsPerPage) * invItemsPerPage;
+            let endIdx = Math.min(startIdx + invItemsPerPage, allItems.length);
+            let itemY = y + 315;
+            for(let i = startIdx; i < endIdx; i++) {
+                let it = allItems[i];
+                let isEquipped = (it.type === "armor" && player.armorId === it.id) || (it.type === "weapon" && player.weaponId === it.id);
+                ctx.fillStyle = isEquipped ? "#2a5a2a" : "#2a2e4a";
+                ctx.fillRect(x+20, itemY, w-40, 55);
+                ctx.fillStyle = "#ffcc88"; ctx.font = "16px monospace"; ctx.fillText(it.icon, x+30, itemY+28);
+                ctx.fillStyle = "#ffffaa"; ctx.font = "10px monospace"; ctx.fillText(it.name, x+55, itemY+22);
+                if(it.def) ctx.fillText(`+${it.def} защиты | Ур.${it.level}`, x+55, itemY+42);
+                if(it.dmgMin) ctx.fillText(`${it.dmgMin}-${it.dmgMax} урона | Ур.${it.level}`, x+55, itemY+42);
+                if(!isEquipped) {
+                    ctx.fillStyle = "#ffaa55"; ctx.fillRect(x+w-100, itemY+15, 70, 25);
+                    ctx.fillStyle = "#000"; ctx.font = "9px monospace"; ctx.fillText("НАДЕТЬ", x+w-85, itemY+33);
+                } else {
+                    ctx.fillStyle = "#88ffaa"; ctx.fillText("✓ НАДЕТО", x+w-90, itemY+33);
+                }
+                itemY += 60;
+            }
+            ctx.restore();
+            
+            if(allItems.length > invItemsPerPage) {
+                let scrollBarX = x + w - 20;
+                let scrollBarH = h - 340;
+                let scrollBarY = y + 310;
+                let maxScroll = Math.max(0, allItems.length - invItemsPerPage);
+                let scrollPercent = invScroll / maxScroll;
+                let thumbH = Math.max(40, scrollBarH * (invItemsPerPage / allItems.length));
+                let thumbY = scrollBarY + scrollPercent * (scrollBarH - thumbH);
+                ctx.fillStyle = "#4a4e6a"; ctx.fillRect(scrollBarX, scrollBarY, 10, scrollBarH);
+                ctx.fillStyle = "#ffaa55"; ctx.fillRect(scrollBarX, thumbY, 10, thumbH);
+            }
+        }
+        
+        function handleInventoryClick(mx, my) {
+            let w = 450, h = 500;
+            let x = canvasWidth/2 - w/2, y = canvasHeight/2 - h/2;
+            if(mx > x+w-40 && mx < x+w-10 && my > y+15 && my < y+45) { showInventory = false; return true; }
+            
+            let availableArmor = ALL_ARMOR.filter(a => a.level <= player.level);
+            let availableWeapons = ALL_WEAPONS.filter(w => w.level <= player.level);
+            let allItems = [...availableArmor.map(a => ({...a, type: "armor"})), ...availableWeapons.map(w => ({...w, type: "weapon"}))];
+            let startIdx = Math.floor(invScroll / invItemsPerPage) * invItemsPerPage;
+            let endIdx = Math.min(startIdx + invItemsPerPage, allItems.length);
+            let itemY = y + 315;
+            for(let i = startIdx; i < endIdx; i++) {
+                let it = allItems[i];
+                let isEquipped = (it.type === "armor" && player.armorId === it.id) || (it.type === "weapon" && player.weaponId === it.id);
+                if(!isEquipped && my > itemY && my < itemY + 55 && mx > x+20 && mx < x+w-40) {
+                    if(it.type === "armor") { player.armorId = it.id; addMsg(`🛡️ Надета ${it.name}!`); }
+                    else { player.weaponId = it.id; addMsg(`⚔️ Надето ${it.name}!`); }
+                    updateStatsFromLevel();
+                    saveGame();
+                    return true;
+                }
+                itemY += 60;
+            }
+            return false;
+        }
+        
+        function handleInventoryTouch(e) {
+            let rect = canvas.getBoundingClientRect();
+            let touch = e.touches[0];
+            let x = (touch.clientX - rect.left) * (canvasWidth/rect.width);
+            let y = (touch.clientY - rect.top) * (canvasHeight/rect.height);
+            let w = 450, h = 500;
+            let invX = canvasWidth/2 - w/2, invY = canvasHeight/2 - h/2;
+            let availableArmor = ALL_ARMOR.filter(a => a.level <= player.level);
+            let availableWeapons = ALL_WEAPONS.filter(w => w.level <= player.level);
+            let allItems = [...availableArmor, ...availableWeapons];
+            let maxScroll = Math.max(0, allItems.length - invItemsPerPage);
+            let scrollBarX = invX + w - 20;
+            let scrollBarY = invY + 310;
+            let scrollBarH = h - 340;
+            if(x > scrollBarX && x < scrollBarX + 10 && y > scrollBarY && y < scrollBarY + scrollBarH) {
+                let percent = (y - scrollBarY) / scrollBarH;
+                invScroll = Math.min(maxScroll, Math.max(0, percent * maxScroll));
+                e.preventDefault();
+                return true;
+            }
+            return false;
+        }
+        
+        // ========== СТАТИСТИКА ==========
+        let showStatsWindow = false;
+        let statsScroll = 0;
+        let statsItemsPerPage = 5;
+        
+        function drawStatsWindow() {
+            let w = 450, h = 450;
+            let x = canvasWidth/2 - w/2, y = canvasHeight/2 - h/2;
+            ctx.fillStyle = "#1a1e2add"; ctx.fillRect(x, y, w, h);
+            ctx.strokeStyle = "#ffaa55"; ctx.lineWidth = 3; ctx.strokeRect(x, y, w, h);
+            ctx.fillStyle = "#ffcc88"; ctx.font = "bold 20px monospace"; ctx.fillText("📊 СТАТИСТИКА", x+20, y+35);
+            ctx.fillStyle = "#ffaa55"; ctx.fillRect(x+w-40, y+15, 30, 30);
+            ctx.fillStyle = "#ffcc88"; ctx.font = "24px monospace"; ctx.fillText("✕", x+w-32, y+40);
+            ctx.fillStyle = "#aa8866"; ctx.fillRect(x+20, y+55, w-40, 3);
+            
+            let t = getPlayTime();
+            let statItems = [
+                `👾 Убито мобов: ${stats.mobsKilled}`,
+                `💰 Всего золота: ${stats.totalGold}`,
+                `⚔️ Нанесено урона: ${stats.totalDamage}`,
+                `🛡️ Получено урона: ${stats.totalDamageTaken}`,
+                `⭐ Уровень: ${player.level}`,
+                `🌍 Мир: ${WORLDS[currentWorld].name}`,
+                `⏱️ Время в игре: ${t.h}ч ${t.m}м ${t.s}с`,
+                `🚪 Убито для портала: ${mobsKilledInWorld}/${MOBS_NEEDED_FOR_PORTAL}`,
+                `💰 Текущее золото: ${player.gold}`,
+                `📈 Всего заработано: ${stats.totalGold}`
+            ];
+            
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(x+10, y+70, w-20, h-100);
+            ctx.clip();
+            
+            let startIdx = Math.floor(statsScroll / statsItemsPerPage) * statsItemsPerPage;
+            let endIdx = Math.min(startIdx + statsItemsPerPage, statItems.length);
+            let itemY = y + 85;
+            for(let i = startIdx; i < endIdx; i++) {
+                ctx.fillStyle = "#edbc"; ctx.font = "14px monospace";
+                ctx.fillText(statItems[i], x+30, itemY);
+                itemY += 45;
+            }
+            ctx.restore();
+            
+            if(statItems.length > statsItemsPerPage) {
+                let scrollBarX = x + w - 20;
+                let scrollBarH = h - 100;
+                let scrollBarY = y + 70;
+                let maxScroll = Math.max(0, statItems.length - statsItemsPerPage);
+                let scrollPercent = statsScroll / maxScroll;
+                let thumbH = Math.max(40, scrollBarH * (statsItemsPerPage / statItems.length));
+                let thumbY = scrollBarY + scrollPercent * (scrollBarH - thumbH);
+                ctx.fillStyle = "#4a4e6a"; ctx.fillRect(scrollBarX, scrollBarY, 10, scrollBarH);
+                ctx.fillStyle = "#ffaa55"; ctx.fillRect(scrollBarX, thumbY, 10, thumbH);
+            }
+        }
+        
+        function handleStatsClick(mx, my) {
+            let w = 450, h = 450;
+            let x = canvasWidth/2 - w/2, y = canvasHeight/2 - h/2;
+            if(mx > x+w-40 && mx < x+w-10 && my > y+15 && my < y+45) { showStatsWindow = false; return true; }
+            return false;
+        }
+        
+        function handleStatsTouch(e) {
+            let rect = canvas.getBoundingClientRect();
+            let touch = e.touches[0];
+            let x = (touch.clientX - rect.left) * (canvasWidth/rect.width);
+            let y = (touch.clientY - rect.top) * (canvasHeight/rect.height);
+            let w = 450, h = 450;
+            let statsX = canvasWidth/2 - w/2, statsY = canvasHeight/2 - h/2;
+            let statItems = [
+                `👾 Убито мобов: ${stats.mobsKilled}`,
+                `💰 Всего золота: ${stats.totalGold}`,
+                `⚔️ Нанесено урона: ${stats.totalDamage}`,
+                `🛡️ Получено урона: ${stats.totalDamageTaken}`,
+                `⭐ Уровень: ${player.level}`,
+                `🌍 Мир: ${WORLDS[currentWorld].name}`,
+                `⏱️ Время в игре: ${getPlayTime().h}ч ${getPlayTime().m}м ${getPlayTime().s}с`,
+                `🚪 Убито для портала: ${mobsKilledInWorld}/${MOBS_NEEDED_FOR_PORTAL}`,
+                `💰 Текущее золото: ${player.gold}`,
+                `📈 Всего заработано: ${stats.totalGold}`
+            ];
+            let maxScroll = Math.max(0, statItems.length - statsItemsPerPage);
+            let scrollBarX = statsX + w - 20;
+            let scrollBarY = statsY + 70;
+            let scrollBarH = h - 100;
+            if(x > scrollBarX && x < scrollBarX + 10 && y > scrollBarY && y < scrollBarY + scrollBarH) {
+                let percent = (y - scrollBarY) / scrollBarH;
+                statsScroll = Math.min(maxScroll, Math.max(0, percent * maxScroll));
+                e.preventDefault();
+                return true;
+            }
+            return false;
+        }
+        
+        // ========== ОСТАЛЬНЫЕ ФУНКЦИИ ==========
+        let selectedMob = null, messages = [], damageFloats = [];
+        
+        function addMsg(t, e=false) { messages.unshift({text:t,isErr:e,life:180}); if(messages.length>5) messages.pop(); }
+        function showDamage(x,y,dmg,isPlayer=false) { damageFloats.push({x,y,dmg,life:20,isPlayer}); }
+        
+        function killMob(mob) {
+            let expGain=mob.exp, goldGain=Math.floor(25+Math.random()*(player.level*13));
+            player.exp+=expGain; player.gold+=goldGain;
+            stats.mobsKilled++; stats.totalGold+=goldGain;
+            mobsKilledInWorld++;
+            updatePortalStatus();
+            addMsg(`✨ +${expGain} опыта, +${goldGain}💰 | Убито в мире: ${mobsKilledInWorld}/${MOBS_NEEDED_FOR_PORTAL}`);
+            if(Math.random()<0.5) { if(Math.random()<0.6) player.potionHp++; else player.potionMp++; addMsg(`🧪 Выпало зелье!`); }
+            let idx=mobs.indexOf(mob); if(idx!==-1) mobs.splice(idx,1);
+            if(selectedMob===mob) selectedMob=null;
+            while(player.exp>=player.expToNext) {
+                player.exp-=player.expToNext; player.level++;
+                updateStatsFromLevel();
+                player.hp=player.maxHp; player.mp=player.maxMp;
+                player.expToNext=90+player.level*38;
+                addMsg(`⭐⭐ УРОВЕНЬ ${player.level}! ⭐⭐`);
+                saveGame();
+            }
+            saveGame();
+        }
+        
+        function playerAttack() {
+            if(!selectedMob || selectedMob.hp<=0) { selectedMob=null; return false; }
+            if(player.attackTimer > 0) return false;
+            let dist = Math.hypot(player.x-selectedMob.x, player.y-selectedMob.y);
+            if(dist > player.attackRange) { addMsg(`🏃 Слишком далеко! (нужно ${player.attackRange}px)`, true); return false; }
+            let dmg = Math.floor(Math.random()*(player.dmgMax-player.dmgMin+1)+player.dmgMin);
+            selectedMob.hp -= dmg;
+            stats.totalDamage += dmg;
+            player.attackTimer = 20;
+            addMsg(`⚔️ ${CLASSES[player.classType].name} → ${dmg} урона ${selectedMob.name}!`);
+            showDamage(selectedMob.x, selectedMob.y, dmg);
+            if(selectedMob.hp <= 0) killMob(selectedMob);
+            saveGame();
+            return true;
+        }
+        
+        function useSkill() {
+            if(!selectedMob || selectedMob.hp<=0) { addMsg(`🎯 Выберите цель!`, true); return; }
+            let c=CLASSES[player.classType];
+            let dist=Math.hypot(player.x-selectedMob.x,player.y-selectedMob.y);
+            if(dist>c.skillRange) { addMsg(`🏃 Слишком далеко для способности!`, true); return; }
+            let manaCost=30+Math.floor(player.level/2);
+            if(player.mp<manaCost) { addMsg(`💙 Не хватает маны! (${manaCost} MP)`, true); return; }
+            player.mp-=manaCost;
+            let avg=(player.dmgMin+player.dmgMax)/2;
+            let dmg=Math.floor(avg*2.4);
+            selectedMob.hp-=dmg;
+            stats.totalDamage+=dmg;
+            addMsg(`✨ ${c.skill}! ${dmg} урона по ${selectedMob.name}!`);
+            showDamage(selectedMob.x,selectedMob.y,dmg);
+            if(selectedMob.hp<=0) killMob(selectedMob);
+            saveGame();
+        }
+        
+        function updateMobs() {
+            for(let m of mobs) {
+                if(m.hp<=0) continue;
+                let dx=player.x-m.x, dy=player.y-m.y, dist=Math.hypot(dx,dy);
+                if(dist<230 && !isInSafeZone(player.x,player.y)) {
+                    let ang=Math.atan2(dy,dx), step=Math.min(m.speed,dist-48);
+                    if(step>0) { let nx=m.x+Math.cos(ang)*step, ny=m.y+Math.sin(ang)*step; if(isWalkable(nx,ny,26) && !isInSafeZone(nx,ny)) { m.x=nx; m.y=ny; } }
+                    if(dist < m.attackRange + 15) {
+                        if(m.attackTimer <= 0) {
+                            let dmg=Math.max(5, m.dmg - Math.floor(player.defense/3));
+                            player.hp -= dmg;
+                            stats.totalDamageTaken += dmg;
+                            m.attackTimer = 30;
+                            addMsg(`💀 ${m.name} нанес ${dmg} урона!`, true);
+                            showDamage(m.x, m.y, dmg, true);
+                            if(player.hp <= 0) {
+                                player.hp = player.maxHp; player.mp = player.maxMp;
+                                player.x = safeZone.x + safeZone.width/2; player.y = safeZone.y + safeZone.height/2;
+                                player.targetX = null; player.targetY = null;
+                                addMsg(`💀 ВОСКРЕШЕНИЕ В БЕЗОПАСНОЙ ЗОНЕ 💀`, true);
+                                saveGame();
+                            }
+                        } else m.attackTimer--;
+                    } else if(m.attackTimer>0) m.attackTimer--;
+                } else if(m.attackTimer>0) m.attackTimer--;
+            }
+        }
+        
+        function useHp() {
+            if(player.potionHp <= 0 && player.potionBigHp <= 0) { addMsg(`❌ Нет зелий HP! Купите у торговца`, true); return; }
+            if(player.potionBigHp > 0 && player.hp < player.maxHp * 0.5) {
+                let heal = Math.floor(player.maxHp * 0.9); player.hp = Math.min(player.maxHp, player.hp + heal); player.potionBigHp--;
+                addMsg(`❤️❤️ БОЛЬШОЕ ЗЕЛЬЕ! +${heal} HP`);
+            } else if(player.potionHp > 0) {
+                let heal = Math.floor(player.maxHp * 0.7); player.hp = Math.min(player.maxHp, player.hp + heal); player.potionHp--;
+                addMsg(`❤️ +${heal} HP (осталось ${player.potionHp})`);
+            } else addMsg(`❌ Нет малых зелий!`, true);
+            saveGame();
+        }
+        
+        function useMp() {
+            if(player.potionMp <= 0 && player.potionBigMp <= 0) { addMsg(`❌ Нет зелий MP! Купите у торговца`, true); return; }
+            if(player.potionBigMp > 0 && player.mp < player.maxMp * 0.5) {
+                let mana = Math.floor(player.maxMp); player.mp = Math.min(player.maxMp, player.mp + mana); player.potionBigMp--;
+                addMsg(`💙💙 БОЛЬШОЕ ЗЕЛЬЕ! +${mana} MP`);
+            } else if(player.potionMp > 0) {
+                let mana = Math.floor(player.maxMp * 0.75); player.mp = Math.min(player.maxMp, player.mp + mana); player.potionMp--;
+                addMsg(`💙 +${mana} MP (осталось ${player.potionMp})`);
+            } else addMsg(`❌ Нет малых зелий!`, true);
+            saveGame();
+        }
+        
+        function switchClass(className) {
+            let classes = Object.keys(CLASSES);
+            let newClass = className || classes[(classes.indexOf(player.classType)+1)%classes.length];
+            if(player.classType===newClass) return;
+            let hpPercent=player.hp/player.maxHp, mpPercent=player.mp/player.maxMp;
+            player.classType=newClass;
+            updateStatsFromLevel();
+            player.hp=Math.max(1,Math.min(player.maxHp,Math.floor(player.maxHp*hpPercent)));
+            player.mp=Math.max(1,Math.min(player.maxMp,Math.floor(player.maxMp*mpPercent)));
+            addMsg(`🔄 Класс: ${CLASSES[newClass].name} ${CLASSES[newClass].icon} | Дальность: ${player.attackRange}px`);
+            saveGame();
+        }
+        
+        function isClickOnNPC(wx, wy) {
+            let distToNPC = Math.hypot(wx - shopNPC.x, wy - shopNPC.y);
+            if(distToNPC < shopNPC.radius + 15) { shopOpen = true; return true; }
+            return false;
+        }
+        
+        function isClickOnPortal(wx, wy) {
+            if(!portalActive) return false;
+            if(Math.hypot(wx - portalX, wy - portalY) < 35) { activatePortal(); return true; }
+            return false;
+        }
+        
+        function selectMobAt(wx,wy) {
+            for(let m of mobs) { if(Math.hypot(m.x-wx,m.y-wy)<55 && m.hp>0) { selectedMob=m; addMsg(`🎯 Цель: ${m.name} (${m.hp}/${m.maxHp} HP)`); return true; } }
+            return false;
+        }
+        
+        function handleClick(wx,wy) {
+            if(showStatsWindow) { if(handleStatsClick(wx, wy)) return; showStatsWindow=false; return; }
+            if(showInventory) { if(handleInventoryClick(wx, wy)) return; showInventory=false; return; }
+            if(shopOpen) { if(handleShopClick(wx, wy)) return; shopOpen=false; return; }
+            if(showMap) { handleMapClick(wx, wy); return; }
+            if(explosionTarget?.active) { castExplosion(wx,wy); return; }
+            if(isClickOnPortal(wx,wy)) return;
+            if(isClickOnNPC(wx,wy)) return;
+            if(selectMobAt(wx,wy)) return;
+            moveTo(wx,wy);
+        }
+        
+        function updateCamera() {
+            let tx=player.x-canvasWidth/2, ty=player.y-canvasHeight/2;
+            tx=Math.min(Math.max(tx,0),WORLD_WIDTH-canvasWidth);
+            ty=Math.min(Math.max(ty,0),WORLD_HEIGHT-canvasHeight);
+            cameraX+=(tx-cameraX)*0.1; cameraY+=(ty-cameraY)*0.1;
+        }
+        
+        // СУПЕРСПОСОБНОСТИ
+        let explosionTarget = null;
+        let whirlwindActive = false;
+        let whirlwindTimer = 0;
+        
+        function useSuper() {
+            if(player.superCooldown > 0) { addMsg(`🌟 Суперспособность: ${Math.ceil(player.superCooldown/10)} сек`, true); return; }
+            let c = CLASSES[player.classType];
+            if(c.name === "Мечник") {
+                whirlwindActive = true; whirlwindTimer = 30; player.superCooldown = 180;
+                addMsg(`🌀 ВИХРЬ! Урон x2 по всем врагам!`);
+                for(let mob of mobs) {
+                    if(Math.hypot(player.x-mob.x,player.y-mob.y)<100 && mob.hp>0) {
+                        let avg=(player.dmgMin+player.dmgMax)/2, dmg=Math.floor(avg*2);
+                        mob.hp-=dmg; stats.totalDamage+=dmg; showDamage(mob.x,mob.y,dmg);
+                        addMsg(`🌀 Вихрь → ${dmg} урона ${mob.name}!`);
+                        if(mob.hp<=0) killMob(mob);
+                    }
+                }
+            } else if(c.name === "Лучник") {
+                let targets = mobs.filter(m=>m.hp>0 && Math.hypot(player.x-m.x,player.y-m.y)<220);
+                targets.sort((a,b)=>Math.hypot(player.x-a.x,player.y-a.y)-Math.hypot(player.x-b.x,player.y-b.y));
+                let hit=0;
+                for(let mob of targets.slice(0,3)) {
+                    let avg=(player.dmgMin+player.dmgMax)/2, dmg=Math.floor(avg*3);
+                    mob.hp-=dmg; stats.totalDamage+=dmg; showDamage(mob.x,mob.y,dmg);
+                    addMsg(`🏹 Тройной выстрел → ${dmg} урона ${mob.name}!`);
+                    if(mob.hp<=0) killMob(mob); hit++;
+                }
+                if(hit>0) player.superCooldown=180;
+                else addMsg(`🏹 Нет врагов поблизости!`, true);
+            } else if(c.name === "Маг") {
+                addMsg(`🔥 Нажмите на любое место для взрыва!`);
+                explosionTarget = { active: true };
+                return;
+            }
+        }
+        
+        function castExplosion(wx, wy) {
+            if(!explosionTarget?.active) return;
+            explosionTarget = null;
+            let avg=(player.dmgMin+player.dmgMax)/2, dmg=Math.floor(avg*2.5), hit=false;
+            for(let mob of mobs) {
+                if(Math.hypot(wx-mob.x,wy-mob.y)<90 && mob.hp>0) {
+                    mob.hp-=dmg; stats.totalDamage+=dmg; showDamage(mob.x,mob.y,dmg);
+                    addMsg(`🔥 Взрыв → ${dmg} урона ${mob.name}!`);
+                    if(mob.hp<=0) killMob(mob); hit=true;
+                }
+            }
+            damageFloats.push({x:wx,y:wy,dmg:"💥",life:15,isExplosion:true});
+            if(!hit) addMsg(`🔥 Взрыв не задел врагов!`, true);
+            player.superCooldown = 180;
+        }
+        
+        // ========== КАРТА ==========
+        function drawFullMap() {
+            let mapWidth = Math.min(canvasWidth - 100, 800), mapHeight = mapWidth * (MAP_H / MAP_W);
+            let mapX = (canvasWidth - mapWidth) / 2, mapY = (canvasHeight - mapHeight) / 2;
+            let cellW = mapWidth / MAP_W, cellH = mapHeight / MAP_H;
+            ctx.fillStyle = "#000000dd"; ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+            ctx.fillStyle = "#2a2e3f"; ctx.fillRect(mapX-10, mapY-10, mapWidth+20, mapHeight+20);
+            for(let y=0; y<MAP_H; y++) for(let x=0; x<MAP_W; x++) {
+                ctx.fillStyle = getMapColor(worldMap[y][x]);
+                ctx.fillRect(mapX + x*cellW, mapY + y*cellH, cellW+0.5, cellH+0.5);
+                if(worldMap[y][x] === 3) { ctx.fillStyle = "#5aac3a"; ctx.font = `${cellH*0.7}px monospace`; ctx.fillText("🌲", mapX + x*cellW + cellW*0.2, mapY + y*cellH + cellH*0.8); }
+                else if(worldMap[y][x] === 4) { ctx.fillStyle = "#8e8e9a"; ctx.font = `${cellH*0.7}px monospace`; ctx.fillText("⛰️", mapX + x*cellW + cellW*0.2, mapY + y*cellH + cellH*0.8); }
+                else if(worldMap[y][x] === 5) { ctx.fillStyle = "#5ac8ff"; ctx.font = `${cellH*0.7}px monospace`; ctx.fillText("💧", mapX + x*cellW + cellW*0.2, mapY + y*cellH + cellH*0.8); }
+            }
+            let playerTileX = player.x / TILE_SIZE, playerTileY = player.y / TILE_SIZE;
+            ctx.fillStyle = "#ff4444"; ctx.beginPath(); ctx.arc(mapX + playerTileX*cellW, mapY + playerTileY*cellH, cellW*0.6, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(mapX + playerTileX*cellW, mapY + playerTileY*cellH, cellW*0.3, 0, Math.PI*2); ctx.fill();
+            if(portalActive && currentWorld === "forest") {
+                let portalTileX = portalX / TILE_SIZE, portalTileY = portalY / TILE_SIZE;
+                ctx.fillStyle = "#ffaa44"; ctx.beginPath(); ctx.arc(mapX + portalTileX*cellW, mapY + portalTileY*cellH, cellW*0.55, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = "#ffff88"; ctx.beginPath(); ctx.arc(mapX + portalTileX*cellW, mapY + portalTileY*cellH, cellW*0.3, 0, Math.PI*2); ctx.fill();
+            }
+            if(mapClickTarget) {
+                let targetTileX = mapClickTarget.x / TILE_SIZE, targetTileY = mapClickTarget.y / TILE_SIZE;
+                ctx.fillStyle = "#ffdd44"; ctx.beginPath(); ctx.arc(mapX + targetTileX*cellW, mapY + targetTileY*cellH, cellW*0.7, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = "#ffaa00"; ctx.beginPath(); ctx.arc(mapX + targetTileX*cellW, mapY + targetTileY*cellH, cellW*0.35, 0, Math.PI*2); ctx.fill();
+            }
+            ctx.fillStyle = "#ffcc88"; ctx.font = `bold ${Math.min(20, canvasWidth/30)}px monospace`; ctx.fillText("🗺️ КАРТА МИРА", canvasWidth/2-80, mapY-20);
+            ctx.fillStyle = "#88aaff"; ctx.font = "12px monospace"; ctx.fillText("⬜ трава 🟫 безопасная 🚪 ворота 🌲 дерево ⛰️ гора 💧 вода 🪨 камень", canvasWidth/2-200, mapY+mapHeight+25);
+            ctx.fillStyle = "#ffaa88"; ctx.fillText("🔴 вы 🔶 портал 🟡 метка", canvasWidth/2+150, mapY+mapHeight+25);
+            ctx.fillStyle = "#ccaa88"; ctx.font = "10px monospace"; ctx.fillText("Нажмите на карту - персонаж пойдёт туда | ESC для закрытия", canvasWidth/2-200, mapY+mapHeight+50);
+        }
+        
+        function handleMapClick(clientX, clientY) {
+            let mapWidth = Math.min(canvasWidth - 100, 800), mapHeight = mapWidth * (MAP_H / MAP_W);
+            let mapX = (canvasWidth - mapWidth) / 2, mapY = (canvasHeight - mapHeight) / 2;
+            let cellW = mapWidth / MAP_W, cellH = mapHeight / MAP_H;
+            if(clientX > mapX && clientX < mapX + mapWidth && clientY > mapY && clientY < mapY + mapHeight) {
+                let tileX = Math.floor((clientX - mapX) / cellW), tileY = Math.floor((clientY - mapY) / cellH);
+                if(tileX >= 0 && tileX < MAP_W && tileY >= 0 && tileY < MAP_H) {
+                    let worldX = tileX * TILE_SIZE + TILE_SIZE/2, worldY = tileY * TILE_SIZE + TILE_SIZE/2;
+                    if(isWalkable(worldX, worldY, 24)) {
+                        mapClickTarget = { x: worldX, y: worldY };
+                        moveTo(worldX, worldY);
+                        addMsg(`📍 Перемещение к отмеченной точке на карте`);
+                        showMap = false;
+                    } else { addMsg(`🚫 В эту точку нельзя пройти (препятствие)`, true); }
+                }
+            }
+        }
+        
+        // ========== ОТРИСОВКА МИРА ==========
+        function drawWorld() {
+            let w = WORLDS[currentWorld];
+            for(let i=0;i<WORLD_WIDTH/52+10;i++) for(let j=0;j<WORLD_HEIGHT/52+10;j++) {
+                let x=i*52-cameraX, y=j*52-cameraY;
+                if(x>-60 && x<canvasWidth+60 && y>-60 && y<canvasHeight+60) {
+                    ctx.fillStyle=((i+j)%2===0)?w.bgColor1:w.bgColor2;
+                    ctx.fillRect(x,y,51,51);
+                }
+            }
+            for(let o of obstacles) {
+                let x=o.x-cameraX, y=o.y-cameraY;
+                if(x>-120 && x<canvasWidth+120 && y>-120 && y<canvasHeight+120) {
+                    if(o.type==='tree') {
+                        ctx.fillStyle="#3c9e3c"; ctx.fillRect(x-18,y-32,36,58);
+                        ctx.fillStyle="#8b5a2b"; ctx.fillRect(x-10,y-8,20,32);
+                        ctx.fillStyle="#5aac3a"; ctx.beginPath(); ctx.ellipse(x,y-42,26,30,0,0,Math.PI*2); ctx.fill();
+                    } else if(o.type==='mountain') {
+                        ctx.fillStyle="#6e6e7a"; ctx.beginPath(); ctx.moveTo(x,y-45); ctx.lineTo(x-40,y+15); ctx.lineTo(x+40,y+15); ctx.fill();
+                        ctx.fillStyle="#8e8e9a"; ctx.beginPath(); ctx.moveTo(x-12,y-15); ctx.lineTo(x,y-38); ctx.lineTo(x+12,y-15); ctx.fill();
+                    } else if(o.type==='rock') {
+                        ctx.fillStyle="#7a6a5a"; ctx.beginPath(); ctx.ellipse(x,y,18,14,0,0,Math.PI*2); ctx.fill();
+                    } else if(o.type==='fence') {
+                        ctx.fillStyle="#c99e6f"; ctx.fillRect(x-10,y-14,20,32);
+                        for(let i=0;i<3;i++) ctx.fillRect(x-6+i*6,y-22,3,14);
+                    }
+                }
+            }
+            let szX=safeZone.x-cameraX, szY=safeZone.y-cameraY;
+            ctx.fillStyle="#88aa66aa"; ctx.fillRect(szX,szY,safeZone.width,safeZone.height);
+            if(portalActive && currentWorld === "forest") {
+                let px = portalX - cameraX, py = portalY - cameraY;
+                ctx.fillStyle = "#aa44ffaa"; ctx.beginPath(); ctx.arc(px, py, 28, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = "#ff88ff"; ctx.beginPath(); ctx.arc(px, py, 20, 0, Math.PI*2); ctx.fill();
+                ctx.font = "20px monospace"; ctx.fillStyle = "#ffffff"; ctx.fillText("🌀", px-12, py+8);
+                ctx.font = "9px monospace"; ctx.fillStyle = "#ffffaa"; ctx.fillText("ПОРТАЛ", px-18, py-20);
+            }
+            let npcX = shopNPC.x - cameraX, npcY = shopNPC.y - cameraY;
+            ctx.fillStyle = "#c99e6f"; ctx.fillRect(npcX-18, npcY-25, 36, 45);
+            ctx.fillStyle = "#e8c28a"; ctx.fillRect(npcX-12, npcY-15, 24, 30);
+            ctx.fillStyle = "#000"; ctx.fillRect(npcX-8, npcY-10, 5, 5); ctx.fillRect(npcX+3, npcY-10, 5, 5);
+            ctx.font = "24px monospace"; ctx.fillStyle = "#ffdd99"; ctx.fillText("🏪", npcX-12, npcY+5);
+            ctx.font = "10px monospace"; ctx.fillStyle = "#ffffaa"; ctx.fillText("Торговец", npcX-20, npcY-28);
+            for(let g of gates) {
+                let gx=g.x-cameraX, gy=g.y-cameraY;
+                ctx.fillStyle="#c9a87a"; ctx.fillRect(gx,gy,g.width,g.height);
+                ctx.fillStyle="#e8c28a";
+                if(g.width>g.height) { for(let i=0;i<3;i++) ctx.fillRect(gx+15+i*25,gy+12,12,18); }
+                else { for(let i=0;i<3;i++) ctx.fillRect(gx+12,gy+15+i*25,18,12); }
+            }
+        }
+        
+        function drawMob(m) {
+            let x = m.x - cameraX, y = m.y - cameraY;
+            if(x < -80 || x > canvasWidth+80) return;
+            m.drawFunc(x, y);
+            let percent = m.hp / m.maxHp;
+            ctx.fillStyle = "#a33"; ctx.fillRect(x-24, y-32, 48, 6);
+            ctx.fillStyle = "#4f6"; ctx.fillRect(x-24, y-32, 48 * percent, 6);
+            ctx.font = "9px monospace"; ctx.fillStyle = "#ffffaa"; ctx.fillText(m.name, x-20, y-38);
+        }
+        
+        function drawUI() {
+            let c=CLASSES[player.classType], fs=Math.max(12,Math.min(16,canvasWidth/65));
+            ctx.fillStyle="#000000aa"; ctx.fillRect(12,12,210,75);
+            ctx.fillStyle="#c55"; ctx.fillRect(18,18,190,18);
+            ctx.fillStyle="#f75"; ctx.fillRect(18,18,190*(player.hp/player.maxHp),18);
+            ctx.fillStyle="#58f"; ctx.fillRect(18,42,190*(player.mp/player.maxMp),16);
+            ctx.fillStyle="#fff"; ctx.font=`bold ${fs}px monospace`;
+            ctx.fillText(`❤️ ${Math.floor(player.hp)}/${player.maxHp}`,22,34);
+            ctx.fillText(`💙 ${Math.floor(player.mp)}/${player.maxMp}`,22,56);
+            ctx.fillStyle="#fd9"; ctx.font=`bold ${fs+2}px monospace`;
+            ctx.fillText(`${c.name} Lv.${player.level}`,22,88);
+            ctx.fillStyle="#000000aa"; ctx.fillRect(12,96,210,14);
+            ctx.fillStyle="#8af"; ctx.fillRect(12,96,210*(player.exp/player.expToNext),14);
+            ctx.fillStyle="#fff"; ctx.font=`${fs-2}px monospace`;
+            ctx.fillText(`EXP: ${player.exp}/${player.expToNext}`,18,108);
+            ctx.fillStyle="#000000aa"; ctx.fillRect(canvasWidth-145,12,133,60);
+            ctx.fillStyle="#fc8"; ctx.font=`bold ${fs}px monospace`;
+            ctx.fillText(`💰 ${player.gold}`,canvasWidth-135,35);
+            ctx.fillText(`🧪${player.potionHp}  🔮${player.potionMp}`,canvasWidth-135,60);
+            for(let i=0;i<Math.min(4,messages.length);i++) { let m=messages[i]; ctx.fillStyle=m.isErr?"#f86c":"#edbc"; ctx.font=`${fs-2}px monospace`; ctx.fillText(m.text.substring(0,32),15,canvasHeight-45-i*18); }
+            if(selectedMob&&selectedMob.hp>0) { let x=selectedMob.x-cameraX, y=selectedMob.y-cameraY; ctx.strokeStyle="#fa4"; ctx.lineWidth=4; ctx.strokeRect(x-20,y-30,56,56); }
+            if(player.targetX!==null && player.targetY!==null) { let tx=player.targetX-cameraX, ty=player.targetY-cameraY; ctx.fillStyle="#fc4a"; ctx.beginPath(); ctx.arc(tx,ty,16,0,Math.PI*2); ctx.fill(); ctx.fillStyle="#fa0"; ctx.beginPath(); ctx.arc(tx,ty,8,0,Math.PI*2); ctx.fill(); }
+            for(let i=0;i<damageFloats.length;i++) { let d=damageFloats[i], x=d.x-cameraX, y=d.y-cameraY; if(d.isExplosion) { ctx.font="bold 32px monospace"; ctx.fillStyle="#ff8844"; ctx.fillText("💥",x-15,y-20); } else { ctx.font=`bold ${d.isPlayer?18:22}px monospace`; ctx.fillStyle=d.isPlayer?"#fa6":"#f84"; ctx.fillText(`-${d.dmg}`,x-12,y-28); } d.life--; if(d.life<=0) damageFloats.splice(i,1), i--; }
+            if(player.superCooldown>0) { let p=player.superCooldown/180; ctx.fillStyle="#000000aa"; ctx.fillRect(15,canvasHeight-70,70,12); ctx.fillStyle="#ffaa44"; ctx.fillRect(15,canvasHeight-70,70*(1-p),12); ctx.fillStyle="#ffaa88"; ctx.font="10px monospace"; ctx.fillText(`🌟 ${Math.ceil(player.superCooldown/10)}с`,20,canvasHeight-55); }
+            if(showMap) drawFullMap();
+            if(shopOpen) drawShop();
+            if(showInventory) drawInventory();
+            if(showStatsWindow) drawStatsWindow();
+        }
+        
+        function update() {
+            updateMove(); updateMobs(); updateCamera();
+            if(player.attackTimer > 0) player.attackTimer--;
+            if(player.superCooldown > 0) player.superCooldown--;
+            if(spawnTimer <= 0) { if(mobs.length < MAX_MOBS) for(let i=0;i<3;i++) spawnMob(); spawnTimer = 12; } else spawnTimer--;
+            for(let i=0;i<messages.length;i++) if(messages[i].life) messages[i].life--;
+            messages=messages.filter(m=>!m.life||m.life>0);
+        }
+        
+        function getWorldClick(cx,cy) {
+            let rect=canvas.getBoundingClientRect();
+            let sx=canvasWidth/rect.width, sy=canvasHeight/rect.height;
+            return { x:(cx-rect.left)*sx+cameraX, y:(cy-rect.top)*sy+cameraY };
+        }
+        
+        canvas.addEventListener('click', (e) => { 
+            let w = getWorldClick(e.clientX, e.clientY); handleClick(w.x, w.y); 
+        });
+        canvas.addEventListener('touchstart', (e) => { 
+            e.preventDefault(); 
+            let t = e.touches[0]; 
+            let w = getWorldClick(t.clientX, t.clientY); 
+            handleClick(w.x, w.y); 
+        });
+        
+        // Touch скроллинг для окон
+        canvas.addEventListener('touchstart', (e) => {
+            if(shopOpen && handleShopTouch(e)) return;
+            if(showInventory && handleInventoryTouch(e)) return;
+            if(showStatsWindow && handleStatsTouch(e)) return;
+        });
+        
+        setInterval(()=>{ if(selectedMob && selectedMob.hp>0 && Math.hypot(player.x-selectedMob.x, player.y-selectedMob.y) <= player.attackRange + 15) playerAttack(); }, 1200);
+        setInterval(() => { if(playerNickname) saveGame(); }, 30000);
+        window.addEventListener('beforeunload', () => { if(playerNickname) saveGame(); });
+        
+        document.getElementById('attackBtn').onclick=()=>{ if(selectedMob&&selectedMob.hp>0) playerAttack(); else addMsg("🎯 Выберите цель",true); };
+        document.getElementById('skillBtn').onclick=()=>useSkill();
+        document.getElementById('hpBtn').onclick=()=>useHp();
+        document.getElementById('mpBtn').onclick=()=>useMp();
+        document.getElementById('statsBtn').onclick=()=>{ showStatsWindow=!showStatsWindow; showInventory=false; showMap=false; statsScroll=0; };
+        document.getElementById('invBtn').onclick=()=>{ showInventory=!showInventory; showStatsWindow=false; showMap=false; invScroll=0; };
+        document.getElementById('mapBtn').onclick=()=>{ showMap=!showMap; showStatsWindow=false; showInventory=false; };
+        document.getElementById('classWarriorBtn').onclick=()=>switchClass('warrior');
+        document.getElementById('classArcherBtn').onclick=()=>switchClass('archer');
+        document.getElementById('classMageBtn').onclick=()=>switchClass('mage');
+        
+        window.addEventListener('keydown',(e)=>{
+            if(e.key==='1') useSuper();
+            if(e.key==='2') useHp();
+            if(e.key==='3') useMp();
+            if(e.key==='s') useSkill();
+            if(e.key==='c') switchClass();
+            if(e.key==='7' || e.key==='m' || e.key==='M') { showMap=!showMap; showStatsWindow=false; showInventory=false; }
+            if(e.key==='Escape') { showMap=false; showStatsWindow=false; showInventory=false; shopOpen=false; }
+        });
+        
+        async function startGame() {
+            await (async () => {
+                const lastNick = localStorage.getItem('rucoy_last_nickname');
+                if(lastNick && localStorage.getItem('rucoy_save_' + lastNick)) {
+                    playerNickname = lastNick;
+                    loadGame(lastNick);
+                    document.getElementById('nicknameDisplay').innerText = `👤 ${lastNick}`;
+                    return;
+                }
+                playerNickname = await showNicknameModal();
+                document.getElementById('nicknameDisplay').innerText = `👤 ${playerNickname}`;
+                if(!loadGame(playerNickname)) { addMsg(`✨ Добро пожаловать, ${playerNickname}! Новая игра начинается!`); }
+            })();
+            generateWorld();
+            updateStatsFromLevel();
+            if(player.hp <= 0) { player.hp = player.maxHp; player.mp = player.maxMp; }
+            for(let i=0;i<15;i++) spawnMob();
+            updatePortalStatus();
+            addMsg("✨ Добро пожаловать!");
+            addMsg(`🗡️ ${CLASSES.warrior.name} - ближний бой (${player.attackRange}px)`);
+            addMsg(`🏹 ${CLASSES.archer.name} - дальний бой (${player.attackRange}px)`);
+            addMsg(`🔮 ${CLASSES.mage.name} - дальний бой (${player.attackRange}px)`);
+            addMsg("⚔️ Атака игрока - 1.2 секунды");
+            addMsg("💀 Атака мобов - 2 секунды");
+            addMsg("🌟 1 - СУПЕРСИЛА | 2 - ЗЕЛЬЕ HP | 3 - ЗЕЛЬЕ MP");
+            addMsg("🏪 Торговец в безопасной зоне (нажмите на него)");
+            addMsg("🌀 Убейте 300 мобов для открытия портала!");
+            addMsg("🗺️ Карта: кнопка 7 или кнопка КАРТА");
+            addMsg("💊 Зелья можно использовать в любой точке карты!");
+            addMsg("📊 Статистика и 🎒 Инвентарь - с прокруткой");
+            addMsg("💾 Игра автоматически сохраняется!");
+        }
+        
+        startGame();
+        
+        function render() { drawWorld(); for(let m of mobs) drawMob(m); drawRealisticPlayer(player.x - cameraX, player.y - cameraY, player.isMoving); drawUI(); }
+        function loop() { update(); render(); requestAnimationFrame(loop); }
+        loop();
+    })();
 </script>
 </body>
 </html>
