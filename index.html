@@ -21,7 +21,6 @@
             position: relative;
         }
 
-        /* Анимированные частицы фона */
         .bg-particle {
             position: fixed;
             pointer-events: none;
@@ -50,7 +49,6 @@
             z-index: 10;
         }
 
-        /* Статистика */
         .stats-bar {
             background: linear-gradient(135deg, #ff9966, #ff5e62);
             padding: 12px 15px;
@@ -85,7 +83,6 @@
             transition: width 0.3s ease;
         }
 
-        /* Персонаж */
         .character-area {
             background: linear-gradient(145deg, #a8edea, #fed6e3);
             padding: 20px;
@@ -94,6 +91,11 @@
             position: relative;
             transition: background 0.3s;
             overflow: hidden;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .character-area::before {
@@ -113,6 +115,12 @@
             to { transform: rotate(360deg); }
         }
 
+        .character-container {
+            position: relative;
+            display: inline-block;
+            z-index: 2;
+        }
+
         #davidEmoji {
             font-size: 110px;
             filter: drop-shadow(12px 16px 20px rgba(0,0,0,0.25));
@@ -122,6 +130,18 @@
             position: relative;
             z-index: 2;
         }
+
+        .outfit-accessory {
+            position: absolute;
+            font-size: 40px;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .outfit-hat { top: -25px; left: 50%; transform: translateX(-50%); }
+        .outfit-glasses { top: 30px; left: 50%; transform: translateX(-50%); font-size: 35px; }
+        .outfit-scarf { top: 60px; left: 50%; transform: translateX(-50%); font-size: 35px; }
+        .outfit-cape { top: 40px; left: 50%; transform: translateX(-50%); font-size: 45px; }
 
         .breathing {
             animation: breathe 3s ease-in-out infinite;
@@ -147,7 +167,6 @@
             z-index: 2;
         }
 
-        /* Панель действий */
         .action-panel {
             padding: 12px;
             background: #fff5e8;
@@ -184,7 +203,6 @@
             font-size: 1.2rem;
         }
 
-        /* Вкладки */
         .tabs {
             display: flex;
             background: #ffefdf;
@@ -251,6 +269,12 @@
             background: #fff0e0;
         }
 
+        .feature-card.active-outfit {
+            border: 3px solid #ff8c33;
+            background: #fff0e0;
+            transform: scale(1.02);
+        }
+
         .feature-icon {
             font-size: 1.6rem;
             margin-bottom: 4px;
@@ -304,17 +328,6 @@
             font-size: 0.7rem;
         }
 
-        .outfit-item {
-            display: inline-block;
-            background: white;
-            border-radius: 15px;
-            padding: 6px;
-            margin: 4px;
-            cursor: pointer;
-            font-size: 0.7rem;
-            border: 1px solid #ffb347;
-        }
-
         footer {
             text-align: center;
             padding: 8px;
@@ -351,6 +364,7 @@
             .action-btn { font-size: 0.6rem; }
             .action-btn span:first-child { font-size: 1rem; }
             #davidEmoji { font-size: 90px; }
+            .outfit-accessory { font-size: 30px; }
         }
     </style>
 </head>
@@ -367,9 +381,16 @@
         <div class="stat"><span>🎮</span> Ур.<span id="levelVal">1</span></div>
     </div>
 
-    <!-- Персонаж -->
+    <!-- Персонаж с аксессуарами -->
     <div class="character-area" id="characterArea">
-        <div id="davidEmoji" class="breathing">👨‍🦰</div>
+        <div class="character-container">
+            <div id="davidEmoji" class="breathing">👨‍🦰</div>
+            <div id="outfitHat" class="outfit-accessory outfit-hat" style="display:none;">🧢</div>
+            <div id="outfitGlasses" class="outfit-accessory outfit-glasses" style="display:none;">🕶️</div>
+            <div id="outfitScarf" class="outfit-accessory outfit-scarf" style="display:none;">🧣</div>
+            <div id="outfitCape" class="outfit-accessory outfit-cape" style="display:none;">🦸</div>
+            <div id="outfitTopHat" class="outfit-accessory outfit-hat" style="display:none;">🎩</div>
+        </div>
         <div id="speechText" class="speech-bubble">✨ Привет! Я Давид 5.0! ✨</div>
     </div>
 
@@ -461,6 +482,7 @@
     <div class="tab-content" id="outfits-tab">
         <div class="game-grid" id="outfitsGrid"></div>
         <div id="currentOutfit" class="pet-stats" style="margin-top:10px;">👕 Текущий наряд: Классика</div>
+        <div class="save-btn" id="resetOutfitBtn" style="margin-top:10px; background:#ff8c33;">🔄 Снять всю одежду</div>
     </div>
 
     <!-- Навыки -->
@@ -487,19 +509,26 @@
     // ==================== ИГРОВЫЕ ПЕРЕМЕННЫЕ ====================
     let hunger = 100, happiness = 100, energy = 100, cleanliness = 100;
     let coins = 200, crystals = 0, level = 1, exp = 0;
-    let hasPet = null, currentRoom = 'default', currentOutfit = 'classic';
+    let hasPet = null, currentRoom = 'default';
     let lastDaily = Date.now();
     
-    // Одежда
-    let outfits = {
-        classic: { name: "👕 Классика", price: 0, bonus: {} },
-        cool: { name: "😎 Крутой", price: 80, bonus: { happiness: 5 } },
-        cute: { name: "🐻 Милашка", price: 100, bonus: { happiness: 8 } },
-        hat: { name: "🧢 Бейсболка", price: 60, bonus: { energy: 5 } },
-        topHat: { name: "🎩 Цилиндр", price: 120, bonus: { coins: 2 } },
-        cape: { name: "🦸 Плащ", price: 150, bonus: { luck: 10 } },
-        glasses: { name: "🕶️ Очки", price: 90, bonus: { intelligence: 5 } },
-        scarf: { name: "🧣 Шарф", price: 70, bonus: { warmth: 5 } }
+    // Одежда - теперь массив активных предметов (можно носить несколько!)
+    let activeOutfits = {
+        hat: false,
+        glasses: false,
+        scarf: false,
+        cape: false,
+        topHat: false
+    };
+    
+    // Данные об одежде
+    let outfitsData = {
+        classic: { name: "👕 Классика", price: 0, type: "base", icon: "👕", emoji: null },
+        hat: { name: "🧢 Бейсболка", price: 60, type: "hat", icon: "🧢", emoji: "🧢", position: "hat" },
+        topHat: { name: "🎩 Цилиндр", price: 100, type: "hat", icon: "🎩", emoji: "🎩", position: "hat" },
+        glasses: { name: "🕶️ Очки", price: 80, type: "face", icon: "🕶️", emoji: "🕶️", position: "glasses" },
+        scarf: { name: "🧣 Шарф", price: 70, type: "neck", icon: "🧣", emoji: "🧣", position: "scarf" },
+        cape: { name: "🦸 Плащ", price: 120, type: "back", icon: "🦸", emoji: "🦸", position: "cape" }
     };
     
     // Навыки
@@ -540,6 +569,47 @@
         fox: { name: "🦊 Лисенок", bonus: " x2 награды" },
         panda: { name: "🐼 Панда", bonus: " медленнее падение параметров" }
     };
+    
+    // Функция обновления внешнего вида персонажа (одежда на нём!)
+    function updateCharacterAppearance() {
+        document.getElementById('outfitHat').style.display = 'none';
+        document.getElementById('outfitGlasses').style.display = 'none';
+        document.getElementById('outfitScarf').style.display = 'none';
+        document.getElementById('outfitCape').style.display = 'none';
+        document.getElementById('outfitTopHat').style.display = 'none';
+        
+        if (activeOutfits.hat) {
+            document.getElementById('outfitHat').style.display = 'block';
+            document.getElementById('outfitHat').innerHTML = '🧢';
+        }
+        if (activeOutfits.topHat) {
+            document.getElementById('outfitTopHat').style.display = 'block';
+            document.getElementById('outfitTopHat').innerHTML = '🎩';
+        }
+        if (activeOutfits.glasses) {
+            document.getElementById('outfitGlasses').style.display = 'block';
+            document.getElementById('outfitGlasses').innerHTML = '🕶️';
+        }
+        if (activeOutfits.scarf) {
+            document.getElementById('outfitScarf').style.display = 'block';
+            document.getElementById('outfitScarf').innerHTML = '🧣';
+        }
+        if (activeOutfits.cape) {
+            document.getElementById('outfitCape').style.display = 'block';
+            document.getElementById('outfitCape').innerHTML = '🦸';
+        }
+        
+        // Обновляем текст текущего наряда
+        let outfitText = [];
+        if (activeOutfits.hat) outfitText.push('🧢');
+        if (activeOutfits.topHat) outfitText.push('🎩');
+        if (activeOutfits.glasses) outfitText.push('🕶️');
+        if (activeOutfits.scarf) outfitText.push('🧣');
+        if (activeOutfits.cape) outfitText.push('🦸');
+        if (outfitText.length === 0) outfitText.push('👕 Классика');
+        
+        document.getElementById('currentOutfit').innerHTML = `👕 Текущий наряд: ${outfitText.join(' + ')}`;
+    }
     
     function createParticles(x, y, emojis) {
         for(let i = 0; i < 8; i++) {
@@ -608,7 +678,6 @@
         updateQuestsUI();
         updateAchievementsUI();
         checkLevelUp();
-        applyOutfitBonus();
         applyPetBonus();
     }
     
@@ -663,14 +732,6 @@
             showSpeech(`🎉 УРОВЕНЬ ${level}! +50⭐ +5💎! 🎉`);
             createParticles(null, null, ['🎉', '⭐', '✨', '🌟']);
             updateUI();
-        }
-    }
-    
-    function applyOutfitBonus() {
-        let outfit = outfits[currentOutfit];
-        if (outfit && outfit.bonus) {
-            if (outfit.bonus.happiness) happiness = Math.min(100, happiness + outfit.bonus.happiness);
-            if (outfit.bonus.energy) energy = Math.min(100, energy + outfit.bonus.energy);
         }
     }
     
@@ -842,15 +903,47 @@
         } else showSpeech("Не хватает⭐!");
     }
     
+    // Одежда - покупаем и надеваем на персонажа!
     function buyOutfit(outfitKey) {
-        if(coins >= outfits[outfitKey].price && currentOutfit !== outfitKey) {
-            coins -= outfits[outfitKey].price;
-            currentOutfit = outfitKey;
-            document.getElementById('currentOutfit').innerHTML = `👕 Текущий наряд: ${outfits[outfitKey].name}`;
-            showSpeech(`Надел ${outfits[outfitKey].name}!`);
+        let outfit = outfitsData[outfitKey];
+        if (!outfit) return;
+        
+        // Для классики - снимаем всю одежду
+        if (outfitKey === 'classic') {
+            activeOutfits = { hat: false, glasses: false, scarf: false, cape: false, topHat: false };
+            showSpeech("Надел классический наряд! 👕");
+            updateCharacterAppearance();
             updateUI();
-        } else if(currentOutfit === outfitKey) showSpeech("Этот наряд уже надет!");
-        else showSpeech("Не хватает⭐!");
+            saveGame();
+            return;
+        }
+        
+        // Проверяем, есть ли уже такой предмет
+        let outfitField = outfit.position;
+        if (activeOutfits[outfitField]) {
+            showSpeech(`Ты уже носишь ${outfit.name}!`, true);
+            return;
+        }
+        
+        if (coins >= outfit.price) {
+            coins -= outfit.price;
+            activeOutfits[outfitField] = true;
+            showSpeech(`Надел ${outfit.name}! ✨`);
+            createParticles(null, null, ['✨', '🌟', '💫']);
+            updateCharacterAppearance();
+            updateUI();
+            saveGame();
+        } else {
+            showSpeech(`Не хватает ${outfit.price}⭐!`, true);
+        }
+    }
+    
+    function resetAllOutfits() {
+        activeOutfits = { hat: false, glasses: false, scarf: false, cape: false, topHat: false };
+        showSpeech("Снял всю одежду! 👕");
+        updateCharacterAppearance();
+        updateUI();
+        saveGame();
     }
     
     function upgradeSkill(skillName) {
@@ -900,13 +993,13 @@
         document.getElementById('dailyQuests').innerHTML = dailyHtml;
         document.getElementById('weeklyQuests').innerHTML = weeklyHtml;
         
-        // Проверка завершения
         for(let q in dailyQuests) {
             let quest = dailyQuests[q];
             if(quest.current >= quest.target && !quest.completed) {
                 quest.completed = true;
                 coins += quest.reward;
                 showNotification(`✅ Квест выполнен! +${quest.reward}⭐`);
+                updateUI();
             }
         }
         for(let q in weeklyQuests) {
@@ -915,10 +1008,10 @@
                 quest.completed = true;
                 coins += quest.reward;
                 showNotification(`✅ Еженедельный квест! +${quest.reward}⭐`);
+                updateUI();
             }
         }
         
-        // Сброс ежедневных квестов
         let now = Date.now();
         if(now - lastQuestReset > 86400000) {
             lastQuestReset = now;
@@ -963,7 +1056,12 @@
     }
     
     function saveGame() {
-        let saveData = { hunger, happiness, energy, cleanliness, coins, crystals, level, exp, hasPet, currentRoom, currentOutfit, lastDaily, lastQuestReset, achievements, skills, dailyQuests, weeklyQuests };
+        let saveData = { 
+            hunger, happiness, energy, cleanliness, coins, crystals, level, exp, 
+            hasPet, currentRoom, lastDaily, lastQuestReset, 
+            achievements, skills, dailyQuests, weeklyQuests,
+            activeOutfits
+        };
         localStorage.setItem('davidSave5', JSON.stringify(saveData));
         showNotification('💾 Сохранено!');
     }
@@ -974,14 +1072,16 @@
             let data = JSON.parse(save);
             hunger = data.hunger || 100; happiness = data.happiness || 100; energy = data.energy || 100; cleanliness = data.cleanliness || 100;
             coins = data.coins || 200; crystals = data.crystals || 0; level = data.level || 1; exp = data.exp || 0;
-            hasPet = data.hasPet || null; currentRoom = data.currentRoom || 'default'; currentOutfit = data.currentOutfit || 'classic';
+            hasPet = data.hasPet || null; currentRoom = data.currentRoom || 'default';
             lastDaily = data.lastDaily || Date.now(); lastQuestReset = data.lastQuestReset || Date.now();
             if(data.achievements) achievements = data.achievements;
             if(data.skills) skills = data.skills;
             if(data.dailyQuests) dailyQuests = data.dailyQuests;
             if(data.weeklyQuests) weeklyQuests = data.weeklyQuests;
+            if(data.activeOutfits) activeOutfits = data.activeOutfits;
+            
             if(hasPet) document.getElementById('petDisplay').innerHTML = `🐾 Твой питомец: ${petBonuses[hasPet].name} ${petBonuses[hasPet].bonus}`;
-            document.getElementById('currentOutfit').innerHTML = `👕 Текущий наряд: ${outfits[currentOutfit].name}`;
+            updateCharacterAppearance();
             updateUI();
             showNotification('💾 Загружено!');
         }
@@ -998,11 +1098,19 @@
     
     function setupOutfitsGrid() {
         let html = '';
-        for(let o in outfits) {
-            html += `<div class="feature-card" onclick="buyOutfit('${o}')">
-                <div class="feature-icon">${outfits[o].name}</div>
-                <div class="feature-title">${outfits[o].name}</div>
-                <div class="feature-cost">${outfits[o].price}⭐</div>
+        for(let o in outfitsData) {
+            let outfit = outfitsData[o];
+            let isActive = false;
+            if (o === 'classic') {
+                isActive = !Object.values(activeOutfits).some(v => v === true);
+            } else {
+                isActive = activeOutfits[outfit.position];
+            }
+            let activeClass = isActive ? 'active-outfit' : '';
+            html += `<div class="feature-card ${activeClass}" onclick="buyOutfit('${o}')">
+                <div class="feature-icon">${outfit.icon}</div>
+                <div class="feature-title">${outfit.name}</div>
+                <div class="feature-cost">${outfit.price}⭐</div>
             </div>`;
         }
         document.getElementById('outfitsGrid').innerHTML = html;
@@ -1020,6 +1128,7 @@
     document.getElementById('dailyBonus').onclick = dailyBonus;
     document.getElementById('saveBtn').onclick = saveGame;
     document.getElementById('resetSkillsBtn').onclick = resetSkills;
+    document.getElementById('resetOutfitBtn').onclick = resetAllOutfits;
     
     document.getElementById('characterArea').onclick = (e) => {
         let phrases = ["Привет, друг! 😊", "Ты лучший!", "Я тебя люблю! ❤️", "Как настроение?", "Давай дружить!"];
@@ -1036,6 +1145,7 @@
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             tab.classList.add('active');
             document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
+            if (tab.dataset.tab === 'outfits') setupOutfitsGrid();
         };
     });
     
