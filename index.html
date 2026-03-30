@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Chugur | Социальная сеть</title>
+    <title>Chugur | Поиск игроков и сообщения</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -63,79 +63,122 @@
             padding: 20px;
         }
 
-        .create-post {
+        .search-hero {
             background: rgba(255,255,255,0.08);
             border-radius: 20px;
             padding: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
         }
 
-        .post-textarea {
-            width: 100%;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 16px;
-            padding: 12px;
+        .search-hero h2 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .search-hero p {
+            font-size: 13px;
+            opacity: 0.7;
+            margin-bottom: 16px;
+        }
+
+        .inline-search {
+            display: flex;
+            gap: 12px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 60px;
+            padding: 5px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .inline-search input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 12px 18px;
             font-size: 16px;
-            font-family: inherit;
-            color: #fff;
-            resize: vertical;
-            margin-bottom: 12px;
+            color: white;
+            outline: none;
         }
 
-        .post-textarea::placeholder {
+        .inline-search input::placeholder {
             color: rgba(255,255,255,0.5);
         }
 
-        .image-preview {
-            margin-bottom: 12px;
-            display: none;
-            position: relative;
-        }
-
-        .image-preview img {
-            max-width: 100%;
-            max-height: 200px;
-            border-radius: 12px;
-        }
-
-        .remove-image {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: rgba(0,0,0,0.7);
-            color: white;
+        .inline-search button {
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
             border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
+            padding: 0 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            color: white;
             cursor: pointer;
+            font-size: 15px;
         }
 
-        .post-actions {
+        .found-card {
+            background: rgba(255,255,255,0.12);
+            border-radius: 28px;
+            padding: 20px;
+            margin-top: 20px;
+            animation: fadeInUp 0.25s ease;
+            border: 1px solid rgba(255,107,107,0.3);
             display: flex;
-            gap: 12px;
             align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
         }
 
-        .file-label {
-            background: rgba(255,255,255,0.15);
-            padding: 8px 16px;
-            border-radius: 30px;
+        .found-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #2a2a3a;
+            border: 2px solid #ff6b6b;
+        }
+
+        .found-info {
+            flex: 1;
+        }
+
+        .found-name {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .found-username {
+            font-size: 13px;
+            opacity: 0.7;
+            font-family: monospace;
+            margin: 4px 0;
+        }
+
+        .write-btn {
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: white;
             cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             font-size: 14px;
         }
 
-        .publish-btn {
-            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-left: auto;
+        .not-found {
+            background: rgba(255,80,80,0.15);
+            border-radius: 24px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+            color: #ff9e9e;
         }
 
         .post-card {
@@ -237,13 +280,7 @@
             margin-bottom: 5px;
         }
 
-        .profile-bio {
-            font-size: 14px;
-            opacity: 0.8;
-            margin-bottom: 15px;
-        }
-
-        .edit-profile-btn, .message-user-btn {
+        .edit-profile-btn, .logout-btn {
             background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
             border: none;
             padding: 12px 24px;
@@ -252,29 +289,6 @@
             font-weight: 600;
             cursor: pointer;
             margin: 5px;
-        }
-
-        .profile-stats {
-            display: flex;
-            justify-content: space-around;
-            background: rgba(255,255,255,0.08);
-            padding: 15px;
-            border-radius: 20px;
-            margin-bottom: 20px;
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            opacity: 0.7;
         }
 
         .bottom-nav {
@@ -316,74 +330,6 @@
             padding: 2px 5px;
             border-radius: 10px;
             min-width: 18px;
-        }
-
-        .search-container {
-            background: rgba(255,255,255,0.08);
-            border-radius: 30px;
-            padding: 10px 15px;
-            margin-bottom: 20px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .search-input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 16px;
-            outline: none;
-        }
-
-        .search-input::placeholder {
-            color: rgba(255,255,255,0.5);
-        }
-
-        .search-btn {
-            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
-            border: none;
-            padding: 8px 20px;
-            border-radius: 30px;
-            color: white;
-            cursor: pointer;
-        }
-
-        .user-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .user-item {
-            background: rgba(255,255,255,0.08);
-            border-radius: 15px;
-            padding: 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-        }
-
-        .user-item-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .user-item-info {
-            flex: 1;
-        }
-
-        .user-item-name {
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .user-item-username {
-            font-size: 12px;
-            opacity: 0.6;
         }
 
         .chat-container {
@@ -501,10 +447,6 @@
             color: #fff;
         }
 
-        .auth-input::placeholder {
-            color: rgba(255,255,255,0.5);
-        }
-
         .auth-btn {
             background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
             color: white;
@@ -537,21 +479,15 @@
             align-items: center;
         }
 
-        .modal-content {
-            max-width: 90%;
-            max-height: 90%;
-        }
-
-        .modal-content img {
-            width: 100%;
-            height: auto;
-            border-radius: 20px;
-        }
-
         .empty-state {
             text-align: center;
             padding: 60px;
             opacity: 0.7;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes fadeIn {
@@ -561,14 +497,12 @@
 
         input[type="file"] { display: none; }
         
-        .username-code {
-            background: rgba(255,107,107,0.2);
-            padding: 8px;
-            border-radius: 12px;
-            font-size: 14px;
-            margin-top: 10px;
-            font-family: monospace;
-            letter-spacing: 1px;
+        .section-title {
+            font-size: 18px;
+            margin: 20px 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
     </style>
 </head>
@@ -585,7 +519,7 @@
         <div class="bottom-nav" id="bottomNav" style="display: none;">
             <button class="nav-item" onclick="showFeed()">🏠</button>
             <button class="nav-item" onclick="showMessages()">💬</button>
-            <button class="nav-item" onclick="showSearch()">🔍</button>
+            <button class="nav-item" onclick="showPlayerSearch()">🔍</button>
             <button class="nav-item" onclick="showProfile()">👤</button>
         </div>
     </div>
@@ -597,12 +531,11 @@
     <script>
         // ========== ГЛОБАЛЬНЫЕ КЛЮЧИ ==========
         const STORAGE_KEYS = {
-            USERS: 'chugur_users_auto',
-            POSTS: 'chugur_posts_auto',
-            MESSAGES: 'chugur_messages_auto'
+            USERS: 'chugur_users_v2',
+            POSTS: 'chugur_posts_v2',
+            MESSAGES: 'chugur_messages_v2'
         };
 
-        // ========== ДАННЫЕ ==========
         let currentUser = null;
         let users = [];
         let posts = [];
@@ -611,21 +544,19 @@
         let currentView = 'feed';
         let updateInterval = null;
 
-        // ========== ГЕНЕРАЦИЯ УНИКАЛЬНОГО USERNAME ==========
+        // ========== ГЕНЕРАЦИЯ УНИКАЛЬНОГО USERNAME (только цифры) ==========
         function generateUniqueUsername() {
             let existingUsernames = users.map(u => u.username);
             let number;
             let username;
-            
             do {
-                number = Math.floor(Math.random() * 90) + 10; // от 10 до 99
-                username = `user${number}`;
+                number = Math.floor(Math.random() * 900) + 100; // 100-999
+                username = `player${number}`;
             } while (existingUsernames.includes(username));
-            
             return username;
         }
 
-        // ========== ЗАГРУЗКА ДАННЫХ ==========
+        // ========== ЗАГРУЗКА/СОХРАНЕНИЕ ==========
         function loadData() {
             const savedUsers = localStorage.getItem(STORAGE_KEYS.USERS);
             const savedPosts = localStorage.getItem(STORAGE_KEYS.POSTS);
@@ -633,56 +564,35 @@
             
             if (savedUsers) {
                 users = JSON.parse(savedUsers);
-                console.log('✅ Загружено пользователей:', users.length);
             } else {
-                // Создаем демо-пользователя
-                users = [{
-                    id: '1',
-                    username: 'admin',
-                    password: '123',
-                    name: 'Администратор',
-                    avatar: '',
-                    bio: 'Добро пожаловать в Chugur!'
-                }];
+                // Демо-игроки для теста
+                users = [
+                    { id: '1', username: 'admin', password: '123', name: 'Главный игрок', avatar: '', bio: 'Привет! Ищу соперников' },
+                    { id: '2', username: 'player777', password: '777', name: 'Алекс', avatar: '', bio: 'Люблю игры' },
+                    { id: '3', username: 'killer99', password: '99', name: 'Макс', avatar: '', bio: 'Напиши мне' }
+                ];
                 localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
             }
             
-            if (savedPosts) {
-                posts = JSON.parse(savedPosts);
-            } else {
-                posts = [];
-            }
+            if (savedPosts) posts = JSON.parse(savedPosts);
+            else posts = [];
             
-            if (savedMessages) {
-                messages = JSON.parse(savedMessages);
-            } else {
-                messages = [];
-            }
+            if (savedMessages) messages = JSON.parse(savedMessages);
+            else messages = [];
         }
 
         function saveData() {
             localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
             localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(posts));
             localStorage.setItem(STORAGE_KEYS.MESSAGES, JSON.stringify(messages));
-            console.log('💾 Данные сохранены. Всего пользователей:', users.length);
-            
-            window.dispatchEvent(new StorageEvent('storage', {
-                key: 'chugur_data_update',
-                newValue: Date.now().toString()
-            }));
+            window.dispatchEvent(new StorageEvent('storage', { key: 'chugur_sync', newValue: Date.now().toString() }));
         }
 
-        // Синхронизация между вкладками
         window.addEventListener('storage', function(e) {
-            if (e.key === 'chugur_data_update') {
-                const savedUsers = localStorage.getItem(STORAGE_KEYS.USERS);
-                if (savedUsers) {
-                    users = JSON.parse(savedUsers);
-                }
-                if (currentView === 'search') {
-                    showSearch();
-                }
+            if (e.key === 'chugur_sync') {
+                loadData();
                 refreshCurrentView();
+                updateMessageBadge();
             }
         });
 
@@ -696,12 +606,12 @@
             container.innerHTML = `
                 <div class="auth-section">
                     <div class="auth-card">
-                        <h2 style="margin-bottom: 20px;">🔮 Chugur</h2>
-                        <p style="margin-bottom: 20px; opacity: 0.7;">Войдите или создайте аккаунт</p>
-                        <input type="text" id="loginUsername" class="auth-input" placeholder="Ваш username">
+                        <h2 style="margin-bottom: 20px;">🎮 Chugur</h2>
+                        <p style="margin-bottom: 20px; opacity: 0.7;">Введите username и пароль</p>
+                        <input type="text" id="loginUsername" class="auth-input" placeholder="Ваш username (например player123)">
                         <input type="password" id="loginPassword" class="auth-input" placeholder="Пароль">
                         <button class="auth-btn" onclick="login()">Войти</button>
-                        <div class="switch-auth" onclick="showRegister()">✨ Создать новый аккаунт</div>
+                        <div class="switch-auth" onclick="showRegister()">✨ Создать аккаунт</div>
                     </div>
                 </div>
             `;
@@ -712,11 +622,11 @@
             container.innerHTML = `
                 <div class="auth-section">
                     <div class="auth-card">
-                        <h2 style="margin-bottom: 20px;">📝 Создать аккаунт</h2>
-                        <input type="password" id="regPassword" class="auth-input" placeholder="Придумайте пароль">
-                        <input type="text" id="regName" class="auth-input" placeholder="Ваше имя">
+                        <h2 style="margin-bottom: 20px;">📝 Новый игрок</h2>
+                        <input type="password" id="regPassword" class="auth-input" placeholder="Пароль (минимум 3 символа)">
+                        <input type="text" id="regName" class="auth-input" placeholder="Ваше имя (никнейм)">
                         <button class="auth-btn" onclick="register()">Зарегистрироваться</button>
-                        <div class="switch-auth" onclick="renderAuth()">← Назад</div>
+                        <div class="switch-auth" onclick="renderAuth()">← Назад к входу</div>
                     </div>
                 </div>
             `;
@@ -726,45 +636,32 @@
             const password = document.getElementById('regPassword').value;
             const name = document.getElementById('regName').value.trim();
             
-            if (!password) {
-                alert('❌ Введите пароль');
-                return;
-            }
+            if (!password || password.length < 3) { alert('❌ Пароль минимум 3 символа'); return; }
             
-            if (password.length < 3) {
-                alert('❌ Пароль должен быть не менее 3 символов');
-                return;
-            }
-            
-            // Генерируем уникальный username
             const username = generateUniqueUsername();
-            
             const newUser = {
                 id: Date.now().toString(),
                 username: username,
                 password: password,
                 name: name || username,
                 avatar: '',
-                bio: 'Новый пользователь Chugur'
+                bio: 'Новый игрок Chugur'
             };
-            
             users.push(newUser);
             saveData();
             currentUser = newUser;
-            localStorage.setItem('chugur_current_user_auto', JSON.stringify(currentUser));
+            localStorage.setItem('chugur_current_user', JSON.stringify(currentUser));
             startApp();
-            alert(`✅ Аккаунт создан!\n\n🔑 Ваш username: ${username}\n🔐 Пароль: ${password}\n\nЗапомните эти данные для входа!`);
+            alert(`✅ Аккаунт создан!\n\n🎮 Ваш username: ${username}\n🔐 Пароль: ${password}\n\nЗапомните их для входа. Теперь вы можете искать других игроков!`);
         }
 
         function login() {
             const username = document.getElementById('loginUsername').value.trim().toLowerCase();
             const password = document.getElementById('loginPassword').value;
-            
             const user = users.find(u => u.username === username && u.password === password);
-            
             if (user) {
                 currentUser = JSON.parse(JSON.stringify(user));
-                localStorage.setItem('chugur_current_user_auto', JSON.stringify(currentUser));
+                localStorage.setItem('chugur_current_user', JSON.stringify(currentUser));
                 startApp();
             } else {
                 alert('❌ Неверный username или пароль');
@@ -773,84 +670,120 @@
 
         function logout() {
             currentUser = null;
-            localStorage.removeItem('chugur_current_user_auto');
+            localStorage.removeItem('chugur_current_user');
             if (updateInterval) clearInterval(updateInterval);
             renderAuth();
         }
 
-        // ========== ПОСТЫ ==========
-        let selectedImageData = null;
-
-        function handleImageUpload(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    selectedImageData = event.target.result;
-                    const preview = document.getElementById('imagePreview');
-                    preview.innerHTML = `<img src="${selectedImageData}"><button class="remove-image" onclick="removeImage()">✕</button>`;
-                    preview.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function removeImage() {
-            selectedImageData = null;
-            const preview = document.getElementById('imagePreview');
-            if (preview) { preview.style.display = 'none'; preview.innerHTML = ''; }
-        }
-
-        function publishPost() {
-            const text = document.getElementById('postText').value.trim();
-            if (!text && !selectedImageData) { alert('Напишите текст или добавьте фото'); return; }
+        // ========== ГЛАВНАЯ ФИШКА: ПОИСК ИГРОКА ПО USERNAME (который "выпал" другому) ==========
+        function showPlayerSearch() {
+            currentView = 'searchPlayer';
+            document.getElementById('headerBtn').style.display = 'flex';
+            const oldBack = document.querySelector('.back-btn');
+            if (oldBack) oldBack.remove();
             
-            posts.unshift({
-                id: Date.now().toString(),
-                userId: currentUser.id,
-                userName: currentUser.name,
-                userUsername: currentUser.username,
-                userAvatar: currentUser.avatar || `https://ui-avatars.com/api/?background=ff6b6b&color=fff&bold=true&size=48&name=${encodeURIComponent(currentUser.name)}`,
-                text: text,
-                image: selectedImageData || '',
-                createdAt: new Date().toISOString(),
-                likes: []
-            });
+            document.getElementById('mainContent').innerHTML = `
+                <div class="content">
+                    <div class="search-hero">
+                        <h2>🎲 Найти игрока по username</h2>
+                        <p>Введите username, который вам выпал (например player123). Сразу сможете написать ему!</p>
+                        <div class="inline-search">
+                            <input type="text" id="playerUsernameInput" placeholder="Введите username игрока..." autocomplete="off">
+                            <button onclick="findAndShowPlayer()">Найти →</button>
+                        </div>
+                        <div id="searchPlayerResult"></div>
+                    </div>
+                    <div class="section-title">
+                        <span>✨ Все игроки (кроме вас)</span>
+                    </div>
+                    <div id="allPlayersList" class="user-list"></div>
+                </div>
+            `;
             
-            saveData();
-            document.getElementById('postText').value = '';
-            removeImage();
-            if (currentView === 'feed') renderFeed();
+            const input = document.getElementById('playerUsernameInput');
+            input.addEventListener('keypress', (e) => { if (e.key === 'Enter') findAndShowPlayer(); });
+            
+            renderAllPlayersList();
+            
+            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.nav-item')[2]?.classList.add('active');
         }
-
-        function toggleLike(postId) {
-            const post = posts.find(p => p.id === postId);
-            if (post) {
-                const idx = post.likes.indexOf(currentUser.id);
-                if (idx === -1) post.likes.push(currentUser.id);
-                else post.likes.splice(idx, 1);
-                saveData();
-                if (currentView === 'feed') renderFeed();
-                else if (currentView === 'profile') showProfile();
+        
+        function renderAllPlayersList() {
+            const otherUsers = users.filter(u => u.id !== currentUser?.id);
+            const container = document.getElementById('allPlayersList');
+            if (!container) return;
+            
+            if (otherUsers.length === 0) {
+                container.innerHTML = '<div class="empty-state">😢 Пока нет других игроков. Пригласите друзей!</div>';
+                return;
+            }
+            
+            container.innerHTML = otherUsers.map(u => `
+                <div class="user-item" style="background: rgba(255,255,255,0.08); border-radius: 15px; padding: 12px; display: flex; align-items: center; gap: 12px; margin-bottom: 10px; cursor: pointer;" onclick="openChatById('${u.id}')">
+                    <img class="user-item-avatar" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;" src="${u.avatar || `https://ui-avatars.com/api/?background=ff6b6b&color=fff&bold=true&size=50&name=${encodeURIComponent(u.name)}`}">
+                    <div class="user-item-info" style="flex:1;">
+                        <div class="user-item-name" style="font-weight:600;">${escapeHtml(u.name)}</div>
+                        <div class="user-item-username" style="font-size:12px; opacity:0.7;">${escapeHtml(u.username)}</div>
+                    </div>
+                    <button class="write-btn" style="padding: 6px 14px; font-size:12px;" onclick="event.stopPropagation(); openChatById('${u.id}')">💬</button>
+                </div>
+            `).join('');
+        }
+        
+        // Главная функция: поиск по точному username, который "выпал" другому игроку
+        function findAndShowPlayer() {
+            const input = document.getElementById('playerUsernameInput');
+            const rawUsername = input.value.trim().toLowerCase();
+            if (!rawUsername) {
+                alert('Введите username игрока');
+                return;
+            }
+            
+            const foundUser = users.find(u => u.username === rawUsername && u.id !== currentUser?.id);
+            const resultDiv = document.getElementById('searchPlayerResult');
+            
+            if (foundUser) {
+                resultDiv.innerHTML = `
+                    <div class="found-card">
+                        <img class="found-avatar" src="${foundUser.avatar || `https://ui-avatars.com/api/?background=ff6b6b&color=fff&bold=true&size=64&name=${encodeURIComponent(foundUser.name)}`}">
+                        <div class="found-info">
+                            <div class="found-name">${escapeHtml(foundUser.name)}</div>
+                            <div class="found-username">@${escapeHtml(foundUser.username)}</div>
+                            <div style="font-size:12px; margin-top:6px;">${escapeHtml(foundUser.bio || '')}</div>
+                        </div>
+                        <button class="write-btn" onclick="openChatById('${foundUser.id}')">✉️ Написать сообщение</button>
+                    </div>
+                `;
+                // Прокрутить к результату
+                resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="not-found">
+                        ❌ Игрок с username <strong>${escapeHtml(rawUsername)}</strong> не найден.<br>
+                        Проверьте написание или зарегистрируйтесь, если такого игрока нет.
+                    </div>
+                `;
             }
         }
-
-        function deletePost(postId) {
-            if (confirm('Удалить пост?')) {
-                posts = posts.filter(p => p.id !== postId);
-                saveData();
-                if (currentView === 'feed') renderFeed();
-                else if (currentView === 'profile') showProfile();
+        
+        // Открыть чат по ID пользователя
+        function openChatById(userId) {
+            const chatPartner = users.find(u => u.id === userId);
+            if (chatPartner) {
+                currentChatUser = chatPartner;
+                renderChat();
+            } else {
+                alert('Пользователь не найден');
             }
         }
-
+        
         // ========== СООБЩЕНИЯ ==========
         let chatImageData = null;
-
+        
         function sendMessage() {
             const input = document.getElementById('chatInput');
             const text = input.value.trim();
-            
             if (!text && !chatImageData) return;
             
             const message = {
@@ -866,36 +799,16 @@
                 timestamp: new Date().toISOString(),
                 read: false
             };
-            
             messages.push(message);
             saveData();
-            
             input.value = '';
             chatImageData = null;
             const preview = document.getElementById('chatImagePreview');
-            if (preview) {
-                preview.style.display = 'none';
-                preview.innerHTML = '';
-            }
+            if (preview) { preview.style.display = 'none'; preview.innerHTML = ''; }
             renderChat();
             updateMessageBadge();
         }
-
-        function updateMessageBadge() {
-            const unreadCount = messages.filter(m => m.toId === currentUser?.id && !m.read).length;
-            const msgBtn = document.querySelector('.nav-item:nth-child(2)');
-            if (msgBtn) {
-                const oldBadge = msgBtn.querySelector('.badge');
-                if (oldBadge) oldBadge.remove();
-                if (unreadCount > 0) {
-                    const badge = document.createElement('span');
-                    badge.className = 'badge';
-                    badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
-                    msgBtn.appendChild(badge);
-                }
-            }
-        }
-
+        
         function handleChatImage(e) {
             const file = e.target.files[0];
             if (file) {
@@ -909,23 +822,16 @@
                 reader.readAsDataURL(file);
             }
         }
-
-        function removeChatImage() {
-            chatImageData = null;
-            const preview = document.getElementById('chatImagePreview');
-            if (preview) {
-                preview.style.display = 'none';
-                preview.innerHTML = '';
-            }
-        }
-
+        
+        function removeChatImage() { chatImageData = null; const p = document.getElementById('chatImagePreview'); if(p) { p.style.display = 'none'; p.innerHTML = ''; } }
+        
         function getChatMessages() {
             return messages.filter(m => 
                 (m.fromId === currentUser.id && m.toId === currentChatUser.id) ||
                 (m.fromId === currentChatUser.id && m.toId === currentUser.id)
-            ).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+            ).sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp));
         }
-
+        
         function markMessagesAsRead() {
             let updated = false;
             messages.forEach(m => {
@@ -934,18 +840,14 @@
                     updated = true;
                 }
             });
-            if (updated) {
-                saveData();
-                updateMessageBadge();
-            }
+            if (updated) { saveData(); updateMessageBadge(); }
         }
-
+        
         function renderChat() {
             document.getElementById('headerBtn').style.display = 'none';
             const header = document.getElementById('header');
             const oldBack = document.querySelector('.back-btn');
             if (oldBack) oldBack.remove();
-            
             const backBtn = document.createElement('button');
             backBtn.className = 'back-btn';
             backBtn.innerHTML = '←';
@@ -954,12 +856,11 @@
             
             const chatMsgs = getChatMessages();
             markMessagesAsRead();
-            
             document.getElementById('mainContent').innerHTML = `
                 <div class="chat-container">
                     <div style="padding:15px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.1);">
                         <strong>${escapeHtml(currentChatUser.name)}</strong><br>
-                        <span style="opacity:0.6; font-size:12px;">${escapeHtml(currentChatUser.username)}</span>
+                        <span style="opacity:0.6; font-size:12px;">@${escapeHtml(currentChatUser.username)}</span>
                     </div>
                     <div class="chat-messages" id="chatMessages"></div>
                     <div id="chatImagePreview" style="padding:0 15px; display:none;"></div>
@@ -971,7 +872,6 @@
                     </div>
                 </div>
             `;
-            
             const messagesContainer = document.getElementById('chatMessages');
             chatMsgs.forEach(msg => {
                 const div = document.createElement('div');
@@ -984,10 +884,9 @@
                 messagesContainer.appendChild(div);
             });
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            
             document.getElementById('chatInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
         }
-
+        
         function showMessages() {
             currentView = 'messages';
             currentChatUser = null;
@@ -996,7 +895,6 @@
             if (oldBack) oldBack.remove();
             
             const dialogsMap = new Map();
-            
             messages.forEach(msg => {
                 const otherId = msg.fromId === currentUser.id ? msg.toId : msg.fromId;
                 if (otherId !== currentUser.id && !dialogsMap.has(otherId)) {
@@ -1006,7 +904,6 @@
                             (m.fromId === currentUser.id && m.toId === otherId) ||
                             (m.fromId === otherId && m.toId === currentUser.id)
                         ).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
-                        
                         dialogsMap.set(otherId, {
                             user: otherUser,
                             lastMsg: userMessages[0],
@@ -1015,256 +912,181 @@
                     }
                 }
             });
-            
-            const dialogs = Array.from(dialogsMap.values()).sort((a,b) => 
-                new Date(b.lastMsg.timestamp) - new Date(a.lastMsg.timestamp)
-            );
-            
+            const dialogs = Array.from(dialogsMap.values()).sort((a,b) => new Date(b.lastMsg.timestamp) - new Date(a.lastMsg.timestamp));
             document.getElementById('mainContent').innerHTML = `
                 <div class="content">
                     <h3 style="margin-bottom: 15px;">💬 Диалоги</h3>
-                    <div class="user-list" id="chatList">
+                    <div class="user-list">
                         ${dialogs.map(d => `
-                            <div class="user-item" onclick="openChat('${d.user.id}')">
-                                <img class="user-item-avatar" src="${d.user.avatar || `https://ui-avatars.com/api/?background=ff6b6b&color=fff&bold=true&size=50&name=${encodeURIComponent(d.user.name)}`}">
-                                <div class="user-item-info">
-                                    <div class="user-item-name">${escapeHtml(d.user.name)} ${d.unread > 0 ? `<span style="background:#ff6b6b; padding:2px 6px; border-radius:10px; font-size:10px; margin-left:5px;">${d.unread}</span>` : ''}</div>
+                            <div class="user-item" style="background:rgba(255,255,255,0.08); border-radius:15px; padding:12px; margin-bottom:10px; display:flex; align-items:center; gap:12px; cursor:pointer;" onclick="openChatById('${d.user.id}')">
+                                <img class="user-item-avatar" style="width:50px;height:50px;border-radius:50%;" src="${d.user.avatar || `https://ui-avatars.com/api/?background=ff6b6b&color=fff&bold=true&size=50&name=${encodeURIComponent(d.user.name)}`}">
+                                <div class="user-item-info" style="flex:1;">
+                                    <div class="user-item-name">${escapeHtml(d.user.name)} ${d.unread > 0 ? `<span style="background:#ff6b6b; padding:2px 6px; border-radius:10px; font-size:10px;">${d.unread}</span>` : ''}</div>
                                     <div class="user-item-username" style="font-size:11px;">${escapeHtml(d.user.username)}</div>
                                     <div style="font-size:12px; opacity:0.6;">${d.lastMsg.text ? (d.lastMsg.text.length > 30 ? d.lastMsg.text.slice(0,30)+'...' : d.lastMsg.text) : '📷 Фото'}</div>
                                 </div>
                             </div>
                         `).join('')}
-                        ${dialogs.length === 0 ? '<div class="empty-state">💬 Нет сообщений. Найдите пользователя в поиске 🔍</div>' : ''}
+                        ${dialogs.length === 0 ? '<div class="empty-state">💬 Нет диалогов. Используйте поиск игроков 🔍</div>' : ''}
                     </div>
                 </div>
             `;
-            
             document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.nav-item')[1]?.classList.add('active');
             updateMessageBadge();
         }
-
-        function openChat(userId) {
-            currentChatUser = users.find(u => u.id === userId);
-            if (currentChatUser) renderChat();
-        }
-
-        // ========== ПОИСК ==========
-        function showSearch() {
-            currentView = 'search';
-            document.getElementById('headerBtn').style.display = 'flex';
-            const oldBack = document.querySelector('.back-btn');
-            if (oldBack) oldBack.remove();
-            
-            const allUsers = users.filter(u => u.id !== currentUser?.id);
-            
-            document.getElementById('mainContent').innerHTML = `
-                <div class="content">
-                    <h3 style="margin-bottom: 15px;">🔍 Все пользователи</h3>
-                    <div class="search-container">
-                        <input type="text" id="searchInput" class="search-input" placeholder="Поиск по имени или username...">
-                        <button class="search-btn" onclick="searchUsers()">Найти</button>
-                    </div>
-                    <div style="margin: 10px 0 5px; font-size:12px; opacity:0.6;">Всего пользователей: ${users.length - 1}</div>
-                    <div id="searchResults" class="user-list">
-                        ${allUsers.map(u => `
-                            <div class="user-item" onclick="startChat('${u.id}')">
-                                <img class="user-item-avatar" src="${u.avatar || `https://ui-avatars.com/api/?background=ff6b6b&color=fff&bold=true&size=50&name=${encodeURIComponent(u.name)}`}">
-                                <div class="user-item-info">
-                                    <div class="user-item-name">${escapeHtml(u.name)}</div>
-                                    <div class="user-item-username">${escapeHtml(u.username)}</div>
-                                    <button class="edit-profile-btn" style="margin-top:8px; padding:6px 16px; font-size:12px;" onclick="event.stopPropagation(); startChat('${u.id}')">💬 Написать</button>
-                                </div>
-                            </div>
-                        `).join('')}
-                        ${allUsers.length === 0 ? '<div class="empty-state">😢 Нет других пользователей. Пригласите друзей!</div>' : ''}
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('searchInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') searchUsers(); });
-            
-            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.nav-item')[2]?.classList.add('active');
-        }
-
-        function searchUsers() {
-            const query = document.getElementById('searchInput').value.trim().toLowerCase();
-            const container = document.getElementById('searchResults');
-            
-            let results = users.filter(u => u.id !== currentUser?.id);
-            
-            if (query) {
-                results = results.filter(u => 
-                    u.name.toLowerCase().includes(query) || 
-                    u.username.toLowerCase().includes(query)
-                );
-            }
-            
-            if (results.length === 0) {
-                container.innerHTML = '<div class="empty-state">😢 Пользователи не найдены</div>';
-            } else {
-                container.innerHTML = results.map(u => `
-                    <div class="user-item" onclick="startChat('${u.id}')">
-                        <img class="user-item-avatar" src="${u.avatar || `https://ui-avatars.com/api/?background=ff6b6b&color=fff&bold=true&size=50&name=${encodeURIComponent(u.name)}`}">
-                        <div class="user-item-info">
-                            <div class="user-item-name">${escapeHtml(u.name)}</div>
-                            <div class="user-item-username">${escapeHtml(u.username)}</div>
-                            <button class="edit-profile-btn" style="margin-top:8px; padding:6px 16px; font-size:12px;" onclick="event.stopPropagation(); startChat('${u.id}')">💬 Написать</button>
-                        </div>
-                    </div>
-                `).join('');
+        
+        function updateMessageBadge() {
+            if (!currentUser) return;
+            const unreadCount = messages.filter(m => m.toId === currentUser.id && !m.read).length;
+            const msgBtn = document.querySelector('.nav-item:nth-child(2)');
+            if (msgBtn) {
+                const oldBadge = msgBtn.querySelector('.badge');
+                if (oldBadge) oldBadge.remove();
+                if (unreadCount > 0) {
+                    const badge = document.createElement('span');
+                    badge.className = 'badge';
+                    badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+                    msgBtn.appendChild(badge);
+                }
             }
         }
-
-        function startChat(userId) {
-            currentChatUser = users.find(u => u.id === userId);
-            if (currentChatUser) renderChat();
-        }
-
-        // ========== ПРОФИЛЬ ==========
-        function showProfile() {
-            currentView = 'profile';
-            document.getElementById('headerBtn').style.display = 'flex';
-            const oldBack = document.querySelector('.back-btn');
-            if (oldBack) oldBack.remove();
-            
-            const userPosts = posts.filter(p => p.userId === currentUser.id).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
-            
-            document.getElementById('mainContent').innerHTML = `
-                <div class="content">
-                    <div class="profile">
-                        <div class="profile-header">
-                            <img class="profile-avatar" src="${currentUser.avatar || `https://ui-avatars.com/api/?background=ff6b6b&color=fff&bold=true&size=100&name=${encodeURIComponent(currentUser.name)}`}">
-                            <div class="profile-name">${escapeHtml(currentUser.name)}</div>
-                            <div class="profile-bio" style="font-size:12px; background:rgba(255,107,107,0.2); padding:5px 10px; border-radius:20px; display:inline-block;">${escapeHtml(currentUser.username)}</div>
-                            <div class="profile-bio" style="margin-top:10px;">${escapeHtml(currentUser.bio)}</div>
-                            <button class="edit-profile-btn" onclick="editProfile()">✏️ Редактировать</button>
-                            <button class="message-user-btn" onclick="logout()">🚪 Выйти</button>
-                        </div>
-                        <div class="profile-stats">
-                            <div class="stat"><div class="stat-number">${userPosts.length}</div><div class="stat-label">Постов</div></div>
-                            <div class="stat"><div class="stat-number">${messages.filter(m => m.fromId === currentUser.id).length}</div><div class="stat-label">Сообщений</div></div>
-                        </div>
-                        <div id="profilePosts"></div>
-                    </div>
-                </div>
-            `;
-            
-            const postsContainer = document.getElementById('profilePosts');
-            if (userPosts.length === 0) {
-                postsContainer.innerHTML = '<div class="empty-state">📝 У вас пока нет постов</div>';
-            } else {
-                userPosts.forEach(post => postsContainer.appendChild(createPostElement(post)));
-            }
-            
-            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.nav-item')[3]?.classList.add('active');
-        }
-
-        function editProfile() {
-            const newName = prompt('Новое имя:', currentUser.name);
-            const newBio = prompt('О себе:', currentUser.bio);
-            const newAvatar = prompt('Ссылка на фото (оставьте пустым):', currentUser.avatar);
-            
-            if (newName) currentUser.name = newName;
-            if (newBio) currentUser.bio = newBio;
-            if (newAvatar) currentUser.avatar = newAvatar;
-            
-            const idx = users.findIndex(u => u.id === currentUser.id);
-            if (idx !== -1) users[idx] = currentUser;
+        
+        // ========== ЛЕНТА (посты) ==========
+        function publishPost() {
+            const text = document.getElementById('postText').value.trim();
+            if (!text) { alert('Напишите текст поста'); return; }
+            posts.unshift({
+                id: Date.now().toString(),
+                userId: currentUser.id,
+                userName: currentUser.name,
+                userUsername: currentUser.username,
+                userAvatar: currentUser.avatar || `https://ui-avatars.com/api/?background=ff6b6b&color=fff&bold=true&size=48&name=${encodeURIComponent(currentUser.name)}`,
+                text: text,
+                image: '',
+                createdAt: new Date().toISOString(),
+                likes: []
+            });
             saveData();
-            localStorage.setItem('chugur_current_user_auto', JSON.stringify(currentUser));
-            showProfile();
+            document.getElementById('postText').value = '';
+            if (currentView === 'feed') renderFeed();
         }
-
-        // ========== ЛЕНТА ==========
+        
+        function toggleLike(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (post) {
+                const idx = post.likes.indexOf(currentUser.id);
+                if (idx === -1) post.likes.push(currentUser.id);
+                else post.likes.splice(idx, 1);
+                saveData();
+                if (currentView === 'feed') renderFeed();
+                else if (currentView === 'profile') showProfile();
+            }
+        }
+        
+        function deletePost(postId) {
+            if (confirm('Удалить пост?')) {
+                posts = posts.filter(p => p.id !== postId);
+                saveData();
+                if (currentView === 'feed') renderFeed();
+                else if (currentView === 'profile') showProfile();
+            }
+        }
+        
         function renderFeed() {
             currentView = 'feed';
             document.getElementById('headerBtn').style.display = 'flex';
             const oldBack = document.querySelector('.back-btn');
             if (oldBack) oldBack.remove();
-            
             const sortedPosts = [...posts].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
-            
             document.getElementById('mainContent').innerHTML = `
                 <div class="content">
-                    <div class="create-post">
-                        <textarea id="postText" class="post-textarea" rows="3" placeholder="Что нового?"></textarea>
-                        <div id="imagePreview" class="image-preview"></div>
+                    <div class="create-post" style="background:rgba(255,255,255,0.08); border-radius:20px; padding:20px; margin-bottom:20px;">
+                        <textarea id="postText" class="post-textarea" rows="3" placeholder="Поделитесь мыслями..."></textarea>
                         <div class="post-actions">
-                            <label class="file-label" for="postImage">📷 Фото</label>
-                            <input type="file" id="postImage" accept="image/*" onchange="handleImageUpload(event)">
                             <button class="publish-btn" onclick="publishPost()">Опубликовать</button>
                         </div>
                     </div>
                     <div id="feedContainer"></div>
                 </div>
             `;
-            
             const feedContainer = document.getElementById('feedContainer');
-            if (sortedPosts.length === 0) {
-                feedContainer.innerHTML = '<div class="empty-state">😢 Нет постов. Будьте первым!</div>';
-            } else {
-                sortedPosts.forEach(post => feedContainer.appendChild(createPostElement(post)));
-            }
-            
+            if (sortedPosts.length === 0) feedContainer.innerHTML = '<div class="empty-state">😢 Нет постов. Будьте первым!</div>';
+            else sortedPosts.forEach(post => feedContainer.appendChild(createPostElement(post)));
             document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.nav-item')[0]?.classList.add('active');
         }
-
+        
         function createPostElement(post) {
-            const div = document.createElement('div');
-            div.className = 'post-card';
+            const div = document.createElement('div'); div.className = 'post-card';
             const isLiked = post.likes.includes(currentUser.id);
-            
             div.innerHTML = `
-                <div class="post-header">
+                <div class="post-header" onclick="openChatById('${post.userId}')">
                     <img class="post-avatar" src="${post.userAvatar}">
                     <div class="post-info">
                         <div class="post-name">${escapeHtml(post.userName)}</div>
-                        <div class="post-time" style="font-size:10px;">${escapeHtml(post.userUsername)} • ${formatDate(new Date(post.createdAt))}</div>
+                        <div class="post-time">@${escapeHtml(post.userUsername)} • ${formatDate(new Date(post.createdAt))}</div>
                     </div>
                 </div>
                 <div class="post-text">${escapeHtml(post.text)}</div>
-                ${post.image ? `<img class="post-image" src="${post.image}" onclick="openModal('${post.image}')">` : ''}
                 <div class="post-stats">
                     <button class="stat-btn" onclick="toggleLike('${post.id}')">${isLiked ? '❤️' : '🤍'} ${post.likes.length || ''}</button>
                     ${post.userId === currentUser.id ? `<button class="stat-btn" onclick="deletePost('${post.id}')">🗑️</button>` : ''}
-                    <button class="stat-btn" onclick="startChat('${post.userId}')">💬</button>
+                    <button class="stat-btn" onclick="openChatById('${post.userId}')">💬</button>
                 </div>
             `;
             return div;
         }
-
-        function goHome() {
-            if (currentChatUser) {
-                currentChatUser = null;
-                showMessages();
-            } else {
-                showFeed();
-            }
+        
+        function showProfile() {
+            currentView = 'profile';
+            document.getElementById('headerBtn').style.display = 'flex';
+            const oldBack = document.querySelector('.back-btn');
+            if (oldBack) oldBack.remove();
+            const userPosts = posts.filter(p => p.userId === currentUser.id).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+            document.getElementById('mainContent').innerHTML = `
+                <div class="content">
+                    <div class="profile-header">
+                        <img class="profile-avatar" src="${currentUser.avatar || `https://ui-avatars.com/api/?background=ff6b6b&color=fff&bold=true&size=100&name=${encodeURIComponent(currentUser.name)}`}">
+                        <div class="profile-name">${escapeHtml(currentUser.name)}</div>
+                        <div class="profile-bio" style="font-size:12px; background:rgba(255,107,107,0.2); padding:5px 12px; border-radius:20px; display:inline-block;">@${escapeHtml(currentUser.username)}</div>
+                        <div class="profile-bio">${escapeHtml(currentUser.bio)}</div>
+                        <button class="edit-profile-btn" onclick="editProfile()">✏️ Редактировать</button>
+                        <button class="logout-btn" onclick="logout()">🚪 Выйти</button>
+                    </div>
+                    <div id="profilePosts"></div>
+                </div>
+            `;
+            const container = document.getElementById('profilePosts');
+            if (userPosts.length === 0) container.innerHTML = '<div class="empty-state">📝 У вас пока нет постов</div>';
+            else userPosts.forEach(post => container.appendChild(createPostElement(post)));
+            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.nav-item')[3]?.classList.add('active');
         }
-
+        
+        function editProfile() {
+            const newName = prompt('Новое имя:', currentUser.name);
+            const newBio = prompt('О себе:', currentUser.bio);
+            if (newName) currentUser.name = newName;
+            if (newBio) currentUser.bio = newBio;
+            const idx = users.findIndex(u => u.id === currentUser.id);
+            if (idx !== -1) users[idx] = currentUser;
+            saveData();
+            localStorage.setItem('chugur_current_user', JSON.stringify(currentUser));
+            showProfile();
+        }
+        
+        function goHome() { if (currentChatUser) { currentChatUser = null; showMessages(); } else showFeed(); }
         function refreshCurrentView() {
             if (currentView === 'feed') renderFeed();
             else if (currentView === 'messages' && !currentChatUser) showMessages();
-            else if (currentView === 'search') showSearch();
+            else if (currentView === 'searchPlayer') showPlayerSearch();
             else if (currentView === 'profile') showProfile();
             else if (currentChatUser) renderChat();
             updateMessageBadge();
         }
-
-        function formatDate(date) {
-            const now = new Date();
-            const diff = now - date;
-            const mins = Math.floor(diff/60000);
-            if (mins < 1) return 'только что';
-            if (mins < 60) return `${mins} мин`;
-            if (diff < 86400000) return `${Math.floor(mins/60)} ч`;
-            return `${Math.floor(diff/86400000)} д`;
-        }
-
+        
+        function formatDate(date) { const diff = new Date() - date; const mins = Math.floor(diff/60000); if (mins < 1) return 'только что'; if (mins < 60) return `${mins} мин`; if (diff < 86400000) return `${Math.floor(mins/60)} ч`; return `${Math.floor(diff/86400000)} д`; }
         function escapeHtml(text) { if (!text) return ''; return text.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
         function openModal(src) { document.getElementById('modalImage').src = src; document.getElementById('imageModal').style.display = 'flex'; }
         function closeModal() { document.getElementById('imageModal').style.display = 'none'; }
@@ -1275,16 +1097,13 @@
             document.getElementById('authContainer').style.display = 'none';
             renderFeed();
             if (updateInterval) clearInterval(updateInterval);
-            updateInterval = setInterval(() => { 
-                if (currentView === 'feed') renderFeed();
-                updateMessageBadge();
-            }, 20000);
+            updateInterval = setInterval(() => { if (currentView === 'feed') renderFeed(); updateMessageBadge(); }, 20000);
             updateMessageBadge();
         }
-
-        // ========== ЗАПУСК ==========
+        
+        // ========== ИНИЦИАЛИЗАЦИЯ ==========
         loadData();
-        const savedUser = localStorage.getItem('chugur_current_user_auto');
+        const savedUser = localStorage.getItem('chugur_current_user');
         if (savedUser) {
             const parsed = JSON.parse(savedUser);
             currentUser = users.find(u => u.id === parsed.id);
