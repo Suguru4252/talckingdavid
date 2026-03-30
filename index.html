@@ -585,11 +585,11 @@
     </div>
 
     <script>
-        // ========== ГЛОБАЛЬНЫЕ КЛЮЧИ ДЛЯ ХРАНЕНИЯ ==========
+        // ========== ГЛОБАЛЬНЫЕ КЛЮЧИ ==========
         const STORAGE_KEYS = {
-            USERS: 'chugur_users_v2',
-            POSTS: 'chugur_posts_v2',
-            MESSAGES: 'chugur_messages_v2'
+            USERS: 'chugur_users_final',
+            POSTS: 'chugur_posts_final',
+            MESSAGES: 'chugur_messages_final'
         };
 
         // ========== ДАННЫЕ ==========
@@ -601,7 +601,7 @@
         let currentView = 'feed';
         let updateInterval = null;
 
-        // ========== ЗАГРУЗКА/СОХРАНЕНИЕ (ГЛОБАЛЬНО) ==========
+        // ========== ЗАГРУЗКА ДАННЫХ ==========
         function loadData() {
             const savedUsers = localStorage.getItem(STORAGE_KEYS.USERS);
             const savedPosts = localStorage.getItem(STORAGE_KEYS.POSTS);
@@ -609,8 +609,9 @@
             
             if (savedUsers) {
                 users = JSON.parse(savedUsers);
+                console.log('✅ Загружено пользователей:', users.length, users.map(u => u.username));
             } else {
-                // Создаем демо-пользователя если нет данных
+                // Начальный пользователь
                 users = [{
                     id: '1',
                     username: 'admin',
@@ -620,6 +621,7 @@
                     bio: 'Добро пожаловать в Chugur!'
                 }];
                 localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+                console.log('📝 Создан начальный пользователь: admin');
             }
             
             if (savedPosts) {
@@ -639,33 +641,32 @@
             localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
             localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(posts));
             localStorage.setItem(STORAGE_KEYS.MESSAGES, JSON.stringify(messages));
+            console.log('💾 Данные сохранены. Всего пользователей:', users.length);
             
-            // Триггерим событие для обновления других вкладок
+            // Отправляем событие для обновления других вкладок
             window.dispatchEvent(new StorageEvent('storage', {
-                key: 'chugur_data_updated',
+                key: 'chugur_data_update',
                 newValue: Date.now().toString()
             }));
         }
 
         // Синхронизация между вкладками
         window.addEventListener('storage', function(e) {
-            if (e.key === 'chugur_data_updated') {
-                // Перезагружаем данные
+            if (e.key === 'chugur_data_update') {
+                console.log('🔄 Синхронизация данных...');
                 const savedUsers = localStorage.getItem(STORAGE_KEYS.USERS);
-                const savedPosts = localStorage.getItem(STORAGE_KEYS.POSTS);
-                const savedMessages = localStorage.getItem(STORAGE_KEYS.MESSAGES);
-                
-                if (savedUsers) users = JSON.parse(savedUsers);
-                if (savedPosts) posts = JSON.parse(savedPosts);
-                if (savedMessages) messages = JSON.parse(savedMessages);
-                
-                // Обновляем текущего пользователя
-                if (currentUser) {
-                    const updatedUser = users.find(u => u.id === currentUser.id);
-                    if (updatedUser) currentUser = updatedUser;
+                if (savedUsers) {
+                    users = JSON.parse(savedUsers);
+                    console.log('🔄 Обновлено. Пользователей:', users.length);
                 }
-                
-                // Обновляем интерфейс
+                if (currentView === 'search') {
+                    const searchInput = document.getElementById('searchInput');
+                    if (searchInput && searchInput.value) {
+                        searchUsers();
+                    } else {
+                        showSearch();
+                    }
+                }
                 refreshCurrentView();
             }
         });
@@ -682,7 +683,7 @@
                     <div class="auth-card">
                         <h2 style="margin-bottom: 20px;">🔮 Chugur</h2>
                         <p style="margin-bottom: 20px; opacity: 0.7;">Войдите или создайте аккаунт</p>
-                        <input type="text" id="loginUsername" class="auth-input" placeholder="Ваш username (уникальный)">
+                        <input type="text" id="loginUsername" class="auth-input" placeholder="Ваш username">
                         <input type="password" id="loginPassword" class="auth-input" placeholder="Пароль">
                         <button class="auth-btn" onclick="login()">Войти</button>
                         <div class="switch-auth" onclick="showRegister()">✨ Создать новый аккаунт</div>
@@ -697,11 +698,11 @@
                 <div class="auth-section">
                     <div class="auth-card">
                         <h2 style="margin-bottom: 20px;">📝 Создать аккаунт</h2>
-                        <input type="text" id="regUsername" class="auth-input" placeholder="Придумайте username (например: john_doe)">
+                        <input type="text" id="regUsername" class="auth-input" placeholder="Придумайте username (например: john)">
                         <input type="password" id="regPassword" class="auth-input" placeholder="Пароль">
-                        <input type="text" id="regName" class="auth-input" placeholder="Ваше имя (как вас будут видеть)">
+                        <input type="text" id="regName" class="auth-input" placeholder="Ваше имя">
                         <button class="auth-btn" onclick="register()">Зарегистрироваться</button>
-                        <div class="switch-auth" onclick="renderAuth()">← Назад к входу</div>
+                        <div class="switch-auth" onclick="renderAuth()">← Назад</div>
                     </div>
                 </div>
             `;
@@ -715,7 +716,7 @@
             
             if (user) {
                 currentUser = JSON.parse(JSON.stringify(user));
-                localStorage.setItem('chugur_current_user_v2', JSON.stringify(currentUser));
+                localStorage.setItem('chugur_current_user_final', JSON.stringify(currentUser));
                 startApp();
             } else {
                 alert('❌ Неверный username или пароль');
@@ -732,13 +733,13 @@
                 return;
             }
             
-            if (username.length < 3) {
-                alert('❌ Username должен быть не менее 3 символов');
+            if (username.length < 2) {
+                alert('❌ Username должен быть не менее 2 символов');
                 return;
             }
             
             if (users.find(u => u.username === username)) {
-                alert('❌ Пользователь с таким username уже существует! Придумайте другой.');
+                alert('❌ Пользователь с таким username уже существует!');
                 return;
             }
             
@@ -754,14 +755,14 @@
             users.push(newUser);
             saveData();
             currentUser = newUser;
-            localStorage.setItem('chugur_current_user_v2', JSON.stringify(currentUser));
+            localStorage.setItem('chugur_current_user_final', JSON.stringify(currentUser));
             startApp();
-            alert('✅ Аккаунт создан! Теперь вас могут найти по username: ' + username);
+            alert(`✅ Аккаунт создан! Ваш username: ${username}\nТеперь другие пользователи смогут найти вас по этому username.`);
         }
 
         function logout() {
             currentUser = null;
-            localStorage.removeItem('chugur_current_user_v2');
+            localStorage.removeItem('chugur_current_user_final');
             if (updateInterval) clearInterval(updateInterval);
             renderAuth();
         }
@@ -832,7 +833,7 @@
             }
         }
 
-        // ========== СООБЩЕНИЯ (С АВТОМАТИЧЕСКИМ ДОБАВЛЕНИЕМ ДИАЛОГА) ==========
+        // ========== СООБЩЕНИЯ ==========
         let chatImageData = null;
 
         function sendMessage() {
@@ -866,8 +867,6 @@
                 preview.innerHTML = '';
             }
             renderChat();
-            
-            // Показываем уведомление о новом сообщении (если нужно)
             updateMessageBadge();
         }
 
@@ -916,7 +915,6 @@
             ).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         }
 
-        // Помечаем сообщения как прочитанные
         function markMessagesAsRead() {
             let updated = false;
             messages.forEach(m => {
@@ -944,8 +942,6 @@
             header.insertBefore(backBtn, header.firstChild);
             
             const chatMsgs = getChatMessages();
-            
-            // Помечаем сообщения как прочитанные
             markMessagesAsRead();
             
             document.getElementById('mainContent').innerHTML = `
@@ -988,7 +984,6 @@
             const oldBack = document.querySelector('.back-btn');
             if (oldBack) oldBack.remove();
             
-            // Получаем все диалоги (уникальные чаты)
             const dialogsMap = new Map();
             
             messages.forEach(msg => {
@@ -996,7 +991,6 @@
                 if (otherId !== currentUser.id && !dialogsMap.has(otherId)) {
                     const otherUser = users.find(u => u.id === otherId);
                     if (otherUser) {
-                        // Находим последнее сообщение с этим пользователем
                         const userMessages = messages.filter(m => 
                             (m.fromId === currentUser.id && m.toId === otherId) ||
                             (m.fromId === otherId && m.toId === currentUser.id)
@@ -1044,12 +1038,15 @@
             if (currentChatUser) renderChat();
         }
 
-        // ========== ПОИСК ==========
+        // ========== ПОИСК (ИСПРАВЛЕН) ==========
         function showSearch() {
             currentView = 'search';
             document.getElementById('headerBtn').style.display = 'flex';
             const oldBack = document.querySelector('.back-btn');
             if (oldBack) oldBack.remove();
+            
+            // Показываем всех пользователей сразу
+            const allUsers = users.filter(u => u.id !== currentUser?.id);
             
             document.getElementById('mainContent').innerHTML = `
                 <div class="content">
@@ -1058,7 +1055,20 @@
                         <input type="text" id="searchInput" class="search-input" placeholder="Введите username или имя...">
                         <button class="search-btn" onclick="searchUsers()">Найти</button>
                     </div>
-                    <div id="searchResults" class="user-list"></div>
+                    <div style="margin: 10px 0 5px; font-size:12px; opacity:0.6;">Всего пользователей: ${users.length - 1}</div>
+                    <div id="searchResults" class="user-list">
+                        ${allUsers.map(u => `
+                            <div class="user-item" onclick="startChat('${u.id}')">
+                                <img class="user-item-avatar" src="${u.avatar || `https://ui-avatars.com/api/?background=ff6b6b&color=fff&bold=true&size=50&name=${encodeURIComponent(u.name)}`}">
+                                <div class="user-item-info">
+                                    <div class="user-item-name">${escapeHtml(u.name)}</div>
+                                    <div class="user-item-username">@${escapeHtml(u.username)}</div>
+                                    <button class="edit-profile-btn" style="margin-top:8px; padding:6px 16px; font-size:12px;" onclick="event.stopPropagation(); startChat('${u.id}')">💬 Написать</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                        ${allUsers.length === 0 ? '<div class="empty-state">😢 Нет других пользователей. Пригласите друзей!</div>' : ''}
+                    </div>
                 </div>
             `;
             
@@ -1070,14 +1080,17 @@
 
         function searchUsers() {
             const query = document.getElementById('searchInput').value.trim().toLowerCase();
-            if (!query) return;
-            
-            const results = users.filter(u => 
-                u.id !== currentUser.id && 
-                (u.name.toLowerCase().includes(query) || u.username.toLowerCase().includes(query))
-            );
-            
             const container = document.getElementById('searchResults');
+            
+            let results = users.filter(u => u.id !== currentUser?.id);
+            
+            if (query) {
+                results = results.filter(u => 
+                    u.name.toLowerCase().includes(query) || 
+                    u.username.toLowerCase().includes(query)
+                );
+            }
+            
             if (results.length === 0) {
                 container.innerHTML = '<div class="empty-state">😢 Пользователи не найдены</div>';
             } else {
@@ -1151,7 +1164,7 @@
             const idx = users.findIndex(u => u.id === currentUser.id);
             if (idx !== -1) users[idx] = currentUser;
             saveData();
-            localStorage.setItem('chugur_current_user_v2', JSON.stringify(currentUser));
+            localStorage.setItem('chugur_current_user_final', JSON.stringify(currentUser));
             showProfile();
         }
 
@@ -1226,7 +1239,14 @@
         function refreshCurrentView() {
             if (currentView === 'feed') renderFeed();
             else if (currentView === 'messages' && !currentChatUser) showMessages();
-            else if (currentView === 'search') { const input = document.getElementById('searchInput'); if (input && input.value) searchUsers(); }
+            else if (currentView === 'search') { 
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput && searchInput.value) {
+                    searchUsers();
+                } else {
+                    showSearch();
+                }
+            }
             else if (currentView === 'profile') showProfile();
             else if (currentChatUser) renderChat();
             updateMessageBadge();
@@ -1261,7 +1281,7 @@
 
         // ========== ЗАПУСК ==========
         loadData();
-        const savedUser = localStorage.getItem('chugur_current_user_v2');
+        const savedUser = localStorage.getItem('chugur_current_user_final');
         if (savedUser) {
             const parsed = JSON.parse(savedUser);
             currentUser = users.find(u => u.id === parsed.id);
